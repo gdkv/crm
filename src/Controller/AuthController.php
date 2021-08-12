@@ -29,16 +29,24 @@ class AuthController extends AbstractController
         if (!$user || !$encoder->isPasswordValid($user, $request->request->get('password'))) {
             return new JsonResponse(['message' => 'fail!']);
         }
- 
+        
+        $lifeTime = (new DateTime())->modify("+5 minutes");
         $jwt = JWT::encode(
             [
                 "username" => $user->getUserIdentifier(),
-                "expiresAt" => (new DateTime())->modify("+5 minutes")->getTimestamp(),
+                "expiresAt" => $lifeTime->getTimestamp(),
             ], 
             $this->getParameter('jwt_secret')
         );
 
-        return new JsonResponse(['message' => 'success!', 'token' => "Bearer {$jwt}"]);
+        return new JsonResponse([
+            'status' => 'ok', 
+            'data' => [
+                "user" => $user->jsonSerialize(),
+                "token" => "Bearer {$jwt}",
+                "expiresAt" => $lifeTime->format("Y-m-d H:i:s"),
+            ],
+        ]);
     }
 
     #[Route('/logout', name: 'logout')]

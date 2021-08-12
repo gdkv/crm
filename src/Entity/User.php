@@ -13,12 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use EntityIdTrait;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -36,9 +31,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $password;
 
-    public function getId(): ?int
+    public function jsonSerialize()
     {
-        return $this->id;
+        return [
+            'id' => $this->getId(),
+            // 'createdAt' => $this->getCreatedAt()->format('d.m.Y H:i:s'),
+            // 'disabled' => $this->getDisabled(),
+            // 'priority' => $this->getPriority(),
+            'username' => $this->getUserIdentifier(),
+            'roles' => $this->getRoles(),
+            // 'nameRu' => $this->getNameRu(),
+            // 'logo' => $this->getLogo(),
+        ];
     }
 
     /**
