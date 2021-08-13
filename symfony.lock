@@ -85,6 +85,18 @@
     "egulias/email-validator": {
         "version": "3.1.1"
     },
+    "elao/enum": {
+        "version": "1.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.7",
+            "ref": "d44e1c8caa4cabcab399724df787de558459dd83"
+        },
+        "files": [
+            "config/packages/elao_enum.yaml"
+        ]
+    },
     "firebase/php-jwt": {
         "version": "v5.4.0"
     },
