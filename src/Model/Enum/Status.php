@@ -23,10 +23,10 @@ final class Status extends ReadableEnum
     public static function readables(): array
     {
         return [
-            self::WORK => 'Администратор',
-            self::FIRED => 'Руководитель',
-            self::SEAK => 'Оператор',
-            self::HOLIDAY => 'Кредитный менеджер',
+            self::WORK => 'Работает',
+            self::FIRED => 'Уволен',
+            self::SEAK => 'Больничный',
+            self::HOLIDAY => 'Отпуск',
         ];
     }
 }

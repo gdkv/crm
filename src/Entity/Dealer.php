@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\DealerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass=DealerRepository::class)
+ */
+class Dealer
+{
+    use EntityIdTrait;
+    use EntityDefaultTrait;
+    use EntityNameTrait;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $slug;
+
+    /**
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="dealer", orphanRemoval=true)
+     */
+    private $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'slug' => $this->getSlug(),
+            'priority' => $this->getPriority(),
+            'disabled' => $this->getDisabled(),
+        ];
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setDealer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getDealer() === $this) {
+                $user->setDealer(null);
+            }
+        }
+
+        return $this;
+    }
+
+}
