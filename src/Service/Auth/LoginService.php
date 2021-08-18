@@ -30,7 +30,7 @@ class LoginService {
             'status' => 'ok', 
             'data' => [
                 "user" => $user->jsonSerialize(),
-                "token" => "Bearer {$jwtData['jwt']}",
+                "token" => $jwtData['jwt'],
                 "expiresAt" => $jwtData['expiresAt']->format("Y-m-d H:i:s"),
             ],
         ];

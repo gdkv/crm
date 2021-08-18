@@ -10,6 +10,7 @@ docker-compose up
 ## App build
 
 ```sh
+cp .env.test .env
 docker-compose exec app sh
 cd /var/www/app/
 composer install

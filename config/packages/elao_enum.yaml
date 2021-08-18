@@ -4,3 +4,7 @@ elao_enum:
     doctrine:
         types:
             Status: App\Model\Enum\Status
+            ApplicationStatus: App\Model\Enum\ApplicationStatus
+            Gender: App\Model\Enum\Gender
+            Source: App\Model\Enum\Source
+            Reason: App\Model\Enum\Reason

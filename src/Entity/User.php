@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use App\Entity\Application\Credit;
 use App\Repository\UserRepository;
 use App\Model\Enum\Role;
 use App\Model\Enum\Status;
+use App\Entity\Application\Application;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -79,6 +81,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="boolean")
      */
     private $isRemote;
+    
+    /**
+     * @ORM\OneToMany(targetEntity=Application::class, mappedBy="operator", orphanRemoval=true)
+     */
+    private $applicationOperator;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Application::class, mappedBy="manager", orphanRemoval=true)
+     */
+    private $salesManager;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Credit::class, mappedBy="manager", orphanRemoval=true)
+     */
+    private $creditManager;
 
     public function jsonSerialize()
     {
