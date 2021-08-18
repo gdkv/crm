@@ -27,7 +27,7 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 'roles' => ['ROLE_SUPERVISOR'], 
                 'plainPassword' => '123456',  
                 '100' => 100, 
-                'smsText' => 'ТЕКСТ', 
+                'smsText' => 'Ждем Вас в Автоцентр Северо-Запад.Скидка на автомобили до 40% м.Тушинская Волоколамское шоссе, д 120', 
                 'isWorking' => false, 
                 'isRemote' => true, 
                 'status' => 'WORK',

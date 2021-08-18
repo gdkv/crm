@@ -88,7 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'roles' => $this->getRoles(),
             'aliasName' => $this->getAliasName(),
             'name' => $this->getName(),
-            'status' => $this->getStatus(),
+            'status' => $this->getStatus()->getReadable(),
             'dealer' => $this->getDealer()->jsonSerialize(),
             'mangoId' => $this->getMangoId(),
             'smsText' => $this->getSmsText(),

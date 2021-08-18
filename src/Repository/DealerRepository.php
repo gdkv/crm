@@ -22,19 +22,18 @@ class DealerRepository extends ServiceEntityRepository
     // /**
     //  * @return Dealer[] Returns an array of Dealer objects
     //  */
-    /*
-    public function findByExampleField($value)
+
+    public function findArray()
     {
         return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('d.id', 'ASC')
+            ->andWhere('d.disabled = :disabled')
+            ->setParameter('disabled', false)
+            ->orderBy('d.priority', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
+            ->getArrayResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Dealer
