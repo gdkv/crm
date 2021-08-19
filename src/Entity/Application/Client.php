@@ -34,13 +34,13 @@ class Client
     private string $phone;
 
     /**
-     * @Assert\Choice(callback={ApplicationStatus::class, "values"})
-     * @ORM\Column(type="ApplicationStatus")
+     * @Assert\Choice(callback={Gender::class, "values"})
+     * @ORM\Column(type="Gender")
      */
     private Gender $gender;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private DateTimeInterface $dateOfBirth;
 
@@ -63,4 +63,96 @@ class Client
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private string $region;
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'name' =>$this->getName(),
+        ];
+    }
+
+    public function getSurname(): ?string
+    {
+        return $this->surname;
+    }
+
+    public function setSurname(?string $surname): self
+    {
+        $this->surname = $surname;
+
+        return $this;
+    }
+
+    public function getPatronymic(): ?string
+    {
+        return $this->patronymic;
+    }
+
+    public function setPatronymic(?string $patronymic): self
+    {
+        $this->patronymic = $patronymic;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getGender()
+    {
+        return $this->gender;
+    }
+
+    public function setGender($gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getDateOfBirth(): ?\DateTimeInterface
+    {
+        return $this->dateOfBirth;
+    }
+
+    public function setDateOfBirth(\DateTimeInterface $dateOfBirth): self
+    {
+        $this->dateOfBirth = $dateOfBirth;
+
+        return $this;
+    }
+
+    public function getAdditional(): ?array
+    {
+        return $this->additional;
+    }
+
+    public function setAdditional(?array $additional): self
+    {
+        $this->additional = $additional;
+
+        return $this;
+    }
+
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?string $region): self
+    {
+        $this->region = $region;
+
+        return $this;
+    }
 }

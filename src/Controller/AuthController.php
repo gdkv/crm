@@ -31,7 +31,7 @@ class AuthController extends AbstractController
     }
 
     #[Route('/register', name: 'register', methods: ['POST'])]
-    #[IsGranted("ROLE_SUPERVISOR", statusCode: 404, message: "Access Denied")]
+    #[IsGranted("ROLE_SUPERVISOR", statusCode: 401, message: "Access Denied")]
     public function register(Request $request, RegisterService $registerService)
     {
         return new JsonResponse(

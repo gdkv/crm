@@ -5,7 +5,7 @@ use Elao\Enum\ReadableEnum;
 
 final class Source extends ReadableEnum
 {
-    public const STREET = 'CALL';
+    public const STREET = 'STREET';
     public const FRIEND = 'FRIEND';
     public const SITE = 'SITE';
     public const BOUGHT = 'BOUGHT';

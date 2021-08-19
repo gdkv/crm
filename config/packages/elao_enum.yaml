@@ -8,3 +8,4 @@ elao_enum:
             Gender: App\Model\Enum\Gender
             Source: App\Model\Enum\Source
             Reason: App\Model\Enum\Reason
+            Type: App\Model\Enum\Type

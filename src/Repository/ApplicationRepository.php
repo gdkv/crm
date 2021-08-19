@@ -19,22 +19,38 @@ class ApplicationRepository extends ServiceEntityRepository
         parent::__construct($registry, Application::class);
     }
 
-    // /**
-    //  * @return Application[] Returns an array of Application objects
-    //  */
-    /*
-    public function findByExampleField($value)
+
+    public function findFilteredArray($filters = [], $orders = [], $limit = 0)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $query = $this->createQueryBuilder('a');
+
+        $query->leftJoin('a.client', 'cl');
+        $query->leftJoin('a.car', 'cr');
+
+        foreach ($filters as $key => $value) {
+
+            $field = match ($key) {
+                "operator" => "a.operator",
+                "date" => "a.actionAt",
+                "client" => "cl.name",
+                "phone" => "cl.phone",
+                "car" => "cr.brand",
+            };
+
+            $query
+                ->andWhere("{$field} = :{$key}")
+                ->setParameter($key, $value);
+        }
+
+        $query->addOrderBy('a.pushedAt', 'DESC');
+        
+        if ($limit > 0 ) {
+            $query->setMaxResults($limit);
+        }
+
+        return $query->getQuery()->getArrayResult();
+
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Application
