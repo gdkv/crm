@@ -18,6 +18,7 @@ final class Reason extends ReadableEnum
     public const WRONGNUMBER = 'WRONGNUMBER';
     public const MAINTENANCE = 'MAINTENANCE';
     public const LTD = 'LTD';
+    public const NONE = null;
 
     public static function values(): array
     {
@@ -35,6 +36,7 @@ final class Reason extends ReadableEnum
             self::WRONGNUMBER,
             self::MAINTENANCE,
             self::LTD,
+            self::NONE,
         ];
     }
 
@@ -54,6 +56,7 @@ final class Reason extends ReadableEnum
             self::WRONGNUMBER => '',
             self::MAINTENANCE => '',
             self::LTD => '',
+            self::NONE => '',
         ];
     }
 }

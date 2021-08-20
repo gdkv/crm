@@ -27,19 +27,19 @@ class CarCreateService {
     {
         $car = new Car();
 
-        $car->setBrand($carData['brand']);
-        $car->setModel($carData['model']);
-        $car->setEquipment($carData['equipment']);
-        $car->setTransmission($carData['transmission']);
-        $car->setEngine($carData['engine']);
-        $car->setDrive($carData['drive']);
-        $car->setYear($carData['year']);
-        $car->setColor($carData['color']);
-        $car->setPrice($carData['price']);
-        $car->setTradeInPrice($carData['tradeInPrice']);
-        $car->setTradeInOwnerPrice($carData['tradeInOwnerPrice']);
-        $car->setIsUsed($carData['isUsed']);
-        $car->setAdditionalData($carData['additionalData']);
+        $car->setBrand(isset($carData['brand']) ? $carData['brand'] : null);
+        $car->setModel(isset($carData['model']) ? $carData['model'] : null);
+        $car->setEquipment(isset($carData['equipment']) ? $carData['equipment'] : null);
+        $car->setTransmission(isset($carData['transmission']) ? $carData['transmission'] : null);
+        $car->setEngine(isset($carData['engine']) ? $carData['engine'] : null);
+        $car->setDrive(isset($carData['drive']) ? $carData['drive'] : null);
+        $car->setYear(isset($carData['year']) ? $carData['year'] : null);
+        $car->setColor(isset($carData['color']) ? $carData['color'] : null);
+        $car->setPrice(isset($carData['price']) ? $carData['price'] : null);
+        $car->setTradeInPrice(isset($carData['tradeInPrice']) ? $carData['tradeInPrice'] : null);
+        $car->setTradeInOwnerPrice(isset($carData['tradeInOwnerPrice']) ? $carData['tradeInOwnerPrice'] : null);
+        $car->setIsUsed(isset($carData['isUsed']) ? $carData['isUsed'] : null);
+        $car->setAdditionalData(isset($carData['additionalData']) ? $carData['additionalData'] : null);
 
         $this->em->persist($car);
         $this->em->flush();

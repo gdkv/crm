@@ -27,11 +27,18 @@ class ApplicationRepository extends ServiceEntityRepository
         $query->leftJoin('a.client', 'cl');
         $query->leftJoin('a.car', 'cr');
 
+        $query
+            ->andWhere("a.actionAt >= :dateStart")
+            ->setParameter("dateStart", $filters['date']->format("Y-m-d 00:00:00"))
+            ->andWhere("a.actionAt <= :dateFinish")
+            ->setParameter("dateFinish", $filters['date']->format("Y-m-d 23:59:59"));
+    
+        unset($filters['date']);
+
         foreach ($filters as $key => $value) {
 
             $field = match ($key) {
                 "operator" => "a.operator",
-                "date" => "a.actionAt",
                 "client" => "cl.name",
                 "phone" => "cl.phone",
                 "car" => "cr.brand",
@@ -48,8 +55,7 @@ class ApplicationRepository extends ServiceEntityRepository
             $query->setMaxResults($limit);
         }
 
-        return $query->getQuery()->getArrayResult();
-
+        return $query->getQuery()->getResult();
     }
 
     /*

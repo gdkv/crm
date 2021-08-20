@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/application', name: 'application.')]
@@ -20,13 +21,18 @@ class ApplicationController extends AbstractController
         Request $request, 
         ApplicationRepository $applicationRepository, 
         ApplicationFilterService $applicationFilterService
-    ): JsonResponse
+    ): Response
     {
         $filters = ($applicationFilterService)($request);
 
         $limit = (int)$request->query->get('limit', 0);
 
-        return new JsonResponse([
+        // return new JsonResponse([
+        //     'status' => 'ok',
+        //     'data' => $applicationRepository->findFilteredArray($filters, [], $limit),
+        // ]);
+
+        return $this->json([
             'status' => 'ok',
             'data' => $applicationRepository->findFilteredArray($filters, [], $limit),
         ]);

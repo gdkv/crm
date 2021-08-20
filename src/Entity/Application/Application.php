@@ -18,6 +18,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Entity(repositoryClass=ApplicationRepository::class)
@@ -47,6 +49,7 @@ class Application
 
     /**
      * @ORM\ManyToOne(targetEntity=Dealer::class)
+     * @Ignore()
      */
     private Dealer $dealer;
 
@@ -77,16 +80,19 @@ class Application
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="salesManager")
      * @ORM\JoinColumn(nullable=true)
+     * @Ignore()
      */
     private ?User $manager = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Car::class)
+     * @Ignore()
      */
     private Car $car;
 
     /**
      * @ORM\ManyToMany(targetEntity=Car::class, inversedBy="applications")
+     * @Ignore()
      */
     private Collection $additionalCars;
 
@@ -150,18 +156,19 @@ class Application
 
     /**
      * @Assert\Choice(callback={Source::class, "values"})
-     * @ORM\Column(type="Source")
+     * @ORM\Column(type="Source", nullable=true)
      */
-    private Source $source;
+    private ?Source $source = null;
 
     /**
      * @Assert\Choice(callback={Reason::class, "values"})
-     * @ORM\Column(type="Reason")
+     * @ORM\Column(type="Reason", nullable=true)
      */
-    private Reason $reason;
+    private ?Reason $reason = null;
 
     /**
      * @ORM\OneToOne(targetEntity=Credit::class)
+     * @Ignore()
      */
     private ?Credit $credit = null;
 
@@ -210,8 +217,8 @@ class Application
             'isCredit' => $this->getIsCredit(),
             'isTradeIn' => $this->getIsTradeIn(),
             'gift' => $this->getGift(),
-            'source' => $this->getSource()->getValue(),
-            'reason' => $this->getReason()->getValue(),
+            'source' => ($this->getSource() ? $this->getSource()->getValue() : null),
+            'reason' => ($this->getReason() ? $this->getReason()->getValue() : null),
             'attempts' => $this->getAttempts(),
             // 'credit' => $this->getCredit(),
             'comments' => $this->getComments(),

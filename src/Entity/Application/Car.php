@@ -18,67 +18,67 @@ class Car
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $brand;
+    private ?string $brand;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $model;
+    private ?string $model;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $equipment;
+    private ?string $equipment;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $transmission;
+    private ?string $transmission;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $engine;
+    private ?string $engine;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $drive;
+    private ?string $drive;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private int $year;
+    private ?int $year;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $color;
+    private ?string $color;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private int $price;
+    private ?int $price;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private int $tradeInPrice;
+    private ?int $tradeInPrice;
 
      /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private int $tradeInOwnerPrice;
+    private ?int $tradeInOwnerPrice;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
-    private bool $isUsed = false;
+    private ?bool $isUsed = false;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private string $additionalData;
+    private ?string $additionalData;
 
     /**
      * @ORM\ManyToMany(targetEntity=Application::class, mappedBy="additionalCars")
@@ -247,7 +247,7 @@ class Car
         return $this->isUsed;
     }
 
-    public function setIsUsed(bool $isUsed): self
+    public function setIsUsed(?bool $isUsed): self
     {
         $this->isUsed = $isUsed;
 

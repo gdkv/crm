@@ -30,6 +30,7 @@ class ApplicationCreateService {
         private EntityManagerInterface $em,
         private ClientCreateService $clientCreateService,
         private CarCreateService $carCreateService,
+        private ApplicationAddService $applicationAddService,
     ){
         $this->serializer = new Serializer([new ObjectNormalizer(), ]);
     }
@@ -38,32 +39,27 @@ class ApplicationCreateService {
     {
         $request->request = new InputBag($request->toArray());
 
-        $client = ($this->clientCreateService)($request->request->all('client'));
-        $car = ($this->carCreateService)($request->request->all('car'));
-        $user = $this->userRepository->find($this->security->getUser());
-
-        $application = new Application();
-
-        $application->setPushedAt(new DateTime('now'));
-        $application->setActionAt(new DateTime('now'));
-        $application->setDealer($user->getDealer());
-        $application->setType(Type::get('MANUAL'));
-        $application->setStatus(ApplicationStatus::get($request->request->get('status')));
-        $application->setClient($client);
-        $application->setOperator($user);
-        $application->setCar($car);
-        array_map(
-            fn($carData) => $application->addAdditionalCar(($this->carCreateService)($carData)), 
-            $request->request->all('additionalCars')
-        );
+        $applicationData = [
+            'client' => $request->request->all('client'),
+            'car' => $request->request->all('car'),
+            'user' => $this->security->getUser(),
+            'status' => $request->request->get('status'),
+            'additionalCar' => $request->request->all('additionalCars'),
+            'tradeIn' => $request->request->get('isTradeIn', false),
+            'gift' => $request->request->all('gift'),
+            'attempts' => $request->request->all('attempts'),
+            'source' => $request->request->get('source'),
+            'reason' => $request->request->get('reason')
+        ];
+        if($request->request->has('actionAt'))
+            $applicationData['actionAt'] = $request->request->get('actionAt');
         if($request->request->has('isCredit'))
-        $application->setIsCredit($request->request->get('isCredit'));
-        $application->setIsTradeIn($request->request->get('isTradeIn', false));
-        $application->setGift($request->request->all('gift'));
-        $application->setAttempts($request->request->all('attempts'));
-        $application->setSource(Source::get($request->request->get('source')));
-        $application->setReason(Reason::get($request->request->get('reason')));
-        
+            $applicationData['isCredit'] = $request->request->get('isCredit');
+        else 
+            $applicationData['isCredit'] = null;
+
+        $application = ($this->applicationAddService)($applicationData);
+
         $this->em->persist($application);
         $this->em->flush();
 

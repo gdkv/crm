@@ -16,6 +16,7 @@ final class Source extends ReadableEnum
     public const MISSED = 'MISSED';
     public const CALL = 'CALL';
     public const OTHER = 'OTHER';
+    public const NONE = null;
 
     public static function values(): array
     {
@@ -31,6 +32,7 @@ final class Source extends ReadableEnum
             self::MISSED,
             self::CALL,
             self::OTHER,
+            self::NONE,
         ];
     }
 
@@ -48,6 +50,7 @@ final class Source extends ReadableEnum
             self::MISSED => '',
             self::CALL => '',
             self::OTHER => '',
+            self::NONE => '',
         ];
     }
 }

@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -53,12 +54,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Ignore()
      */
     private $password;
 
     /**
      * @ORM\ManyToOne(targetEntity=Dealer::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
+     * @Ignore()
      */
     private $dealer;
 
@@ -84,16 +87,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     
     /**
      * @ORM\OneToMany(targetEntity=Application::class, mappedBy="operator", orphanRemoval=true)
+     * @Ignore()
      */
     private $applicationOperator;
 
     /**
      * @ORM\OneToMany(targetEntity=Application::class, mappedBy="manager", orphanRemoval=true)
+     * @Ignore()
      */
     private $salesManager;
 
     /**
      * @ORM\OneToMany(targetEntity=Credit::class, mappedBy="manager", orphanRemoval=true)
+     * @Ignore()
      */
     private $creditManager;
 

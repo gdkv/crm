@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Dealer;
 use App\Repository\DealerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,20 +17,20 @@ class DealerController extends AbstractController
     ){}
 
     #[Route('', name: 'list')]
-    public function index(): JsonResponse
+    public function index(): Response
     {
-        return new JsonResponse([
+        return $this->json([
             'status' => 'ok', 
             'data' => $this->dealerRepository->findArray()
         ]);
     }
 
     #[Route('/{id}', name: 'view')]
-    public function view(Dealer $dealer): JsonResponse
+    public function view(Dealer $dealer): Response
     {
-        return new JsonResponse([
+        return $this->json([
             'status' => 'ok', 
-            'data' => $dealer->jsonSerialize()
+            'data' => $dealer
         ]);
     }
 }

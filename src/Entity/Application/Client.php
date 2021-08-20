@@ -16,17 +16,21 @@ use Doctrine\ORM\Mapping as ORM;
 class Client
 {
     use EntityIdTrait;
-    use EntityNameTrait;
+    
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $surname;
+    private ?string $surname;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $patronymic;
+    private ?string $patronymic;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -37,12 +41,12 @@ class Client
      * @Assert\Choice(callback={Gender::class, "values"})
      * @ORM\Column(type="Gender")
      */
-    private Gender $gender;
+    private ?Gender $gender;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private DateTimeInterface $dateOfBirth;
+    private ?DateTimeInterface $dateOfBirth = null;
 
     /**
      * @Assert\Type("array"),
@@ -62,7 +66,7 @@ class Client
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $region;
+    private ?string $region;
 
     public function jsonSerialize()
     {
@@ -77,6 +81,18 @@ class Client
             'additional' => $this->getAdditional(),
             'region' => $this->getRegion(),
         ];
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getSurname(): ?string
@@ -132,7 +148,7 @@ class Client
         return $this->dateOfBirth;
     }
 
-    public function setDateOfBirth(\DateTimeInterface $dateOfBirth): self
+    public function setDateOfBirth(?\DateTimeInterface $dateOfBirth): self
     {
         $this->dateOfBirth = $dateOfBirth;
 

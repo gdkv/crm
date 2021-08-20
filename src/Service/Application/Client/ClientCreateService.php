@@ -29,13 +29,13 @@ class ClientCreateService {
 
         $client = new Client();
 
-        $client->setName($clientData['name']);
-        $client->setSurname($clientData['surname']);
-        $client->setPatronymic($clientData['patronymic']);
+        $client->setName(isset($clientData['name']) ? $clientData['name'] : null);
+        $client->setSurname(isset($clientData['surname']) ? $clientData['surname'] : null);
+        $client->setPatronymic(isset($clientData['patronymic']) ? $clientData['patronymic'] : null);
         $client->setPhone($clientData['phone']);
-        $client->setDateOfBirth(new DateTime($clientData['dateOfBirth']));
+        $client->setDateOfBirth(isset($clientData['dateOfBirth']) ? new DateTime($clientData['dateOfBirth']) : null);
         $client->setAdditional($clientDataAdditional);
-        $client->setRegion($clientData['region']);
+        $client->setRegion(isset($clientData['region']) ? $clientData['region'] : null);
 
         if ($clientData['gender'])
             $client->setGender(Gender::get($clientData['gender']));
