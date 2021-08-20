@@ -18,8 +18,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
-use PhpParser\Node\Expr\Instanceof_;
-use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Entity(repositoryClass=ApplicationRepository::class)
@@ -45,7 +43,7 @@ class Application
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?DateTimeInterface $arrivedAt;
+    private ?DateTimeInterface $arrivedAt = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Dealer::class)
@@ -80,7 +78,7 @@ class Application
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="salesManager")
      * @ORM\JoinColumn(nullable=true)
      */
-    private ?User $manager;
+    private ?User $manager = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Car::class)
@@ -95,7 +93,7 @@ class Application
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private ?bool $isCredit;
+    private ?bool $isCredit = null;
 
     /**
      * @ORM\Column(type="boolean")
@@ -165,7 +163,7 @@ class Application
     /**
      * @ORM\OneToOne(targetEntity=Credit::class)
      */
-    private ?Credit $credit;
+    private ?Credit $credit = null;
 
     /**
      * @ORM\ManyToMany(targetEntity=Comment::class, inversedBy="applications")
@@ -199,14 +197,8 @@ class Application
             'pushedAt' => $this->getPushedAt(),
             'actionAt' => $this->getActionAt(),
             'arrivedAt' => $this->getArrivedAt(),
-            'status' => [
-                $this->getStatus()->getValue(),
-                $this->getStatus()->getReadable(),
-            ],
-            'type' => [
-                $this->getType()->getValue(),
-                $this->getType()->getReadable(),
-            ],
+            'status' => $this->getStatus()->getValue(),
+            'type' => $this->getType()->getValue(),
             'client' => $this->getClient()->jsonSerialize(),
             'operator' => $this->getOperator()->jsonSerialize(),
             'manager' => ($this->getManager() instanceof User ? $this->getManager()->jsonSerialize() : null),
@@ -218,52 +210,46 @@ class Application
             'isCredit' => $this->getIsCredit(),
             'isTradeIn' => $this->getIsTradeIn(),
             'gift' => $this->getGift(),
-            'source' => [
-                $this->getSource()->getValue(),
-                $this->getSource()->getReadable(),
-            ],
-            'reason' => [
-                $this->getReason()->getValue(),
-                $this->getReason()->getReadable(),
-            ],
+            'source' => $this->getSource()->getValue(),
+            'reason' => $this->getReason()->getValue(),
             'attempts' => $this->getAttempts(),
-            'credit' => $this->getCredit(),
+            // 'credit' => $this->getCredit(),
             'comments' => $this->getComments(),
             'targets' => $this->getTargets(),
             'isProcessed' => $this->getIsProcessed(),
         ];
     }
 
-    public function getPushedAt(): ?\DateTimeInterface
+    public function getPushedAt(): ?DateTimeInterface
     {
         return $this->pushedAt;
     }
 
-    public function setPushedAt(\DateTimeInterface $pushedAt): self
+    public function setPushedAt(DateTimeInterface $pushedAt): self
     {
         $this->pushedAt = $pushedAt;
 
         return $this;
     }
 
-    public function getActionAt(): ?\DateTimeInterface
+    public function getActionAt(): ?DateTimeInterface
     {
         return $this->actionAt;
     }
 
-    public function setActionAt(\DateTimeInterface $actionAt): self
+    public function setActionAt(DateTimeInterface $actionAt): self
     {
         $this->actionAt = $actionAt;
 
         return $this;
     }
 
-    public function getArrivedAt(): ?\DateTimeInterface
+    public function getArrivedAt(): ?DateTimeInterface
     {
         return $this->arrivedAt;
     }
 
-    public function setArrivedAt(\DateTimeInterface $arrivedAt): self
+    public function setArrivedAt(DateTimeInterface $arrivedAt): self
     {
         $this->arrivedAt = $arrivedAt;
 

@@ -46,7 +46,6 @@ class ApplicationCreateService {
 
         $application->setPushedAt(new DateTime('now'));
         $application->setActionAt(new DateTime('now'));
-        $application->setActionAt(new DateTime('now'));
         $application->setDealer($user->getDealer());
         $application->setType(Type::get('MANUAL'));
         $application->setStatus(ApplicationStatus::get($request->request->get('status')));

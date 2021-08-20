@@ -69,6 +69,13 @@ class Client
         return [
             'id' => $this->getId(),
             'name' =>$this->getName(),
+            'surname' => $this->getSurname(),
+            'patronymic' => $this->getPatronymic(),
+            'phone' => $this->getPhone(),
+            'gender' => $this->getGender()->getValue(),
+            'dateOfBirth' => $this->getDateOfBirth(),
+            'additional' => $this->getAdditional(),
+            'region' => $this->getRegion(),
         ];
     }
 
