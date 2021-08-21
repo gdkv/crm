@@ -34,6 +34,7 @@ deploy_dev:
   stage: deploy_dev
   rules:
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
       changes:
         - kube-manifests/secrets.env
       when: manual
