@@ -1,0 +1,56 @@
+stages:
+  - build
+  - deploy_dev
+  - deploy_prod
+  
+build:
+  stage: build
+  rules:
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo -n "$CI_COMMIT_REF_NAME/${CI_COMMIT_SHORT_SHA}" > $CI_PROJECT_DIR/src/version.txt
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA 
+
+.deploy:
+  image:
+    name: bitnami/kubectl:1.18
+    entrypoint: [""]
+  script:
+    - perl -p -i -e 's/\$\{([_A-Z0-9]+)\}/$ENV{$1}/g' kube-manifests/*
+    - |
+      if [ "$CI_ENVIRONMENT_NAME" == "dev" ]; then
+        kubectl create secret generic ${CI_PROJECT_NAME}-app --from-env-file=kube-manifests/secrets.env --dry-run=client -o yaml | kubectl apply -f -
+      fi
+    - kubectl create cm ${CI_PROJECT_NAME}-app --from-env-file=kube-manifests/${CI_ENVIRONMENT_NAME}.env --dry-run=client -o yaml | kubectl apply -f -
+    - kubectl apply -f kube-manifests
+    - kubectl rollout status deployment ${CI_PROJECT_NAME}-app --watch
+
+deploy_dev:
+  extends: .deploy
+  stage: deploy_dev
+  rules:
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      changes:
+        - kube-manifests/secrets.env
+      when: manual
+  variables:
+    DOMAIN_ENV: dev.
+  environment:
+    name: dev
+    kubernetes:
+      namespace: dev
+
+deploy_prod:
+  extends: .deploy
+  stage: deploy_prod
+  rules:
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: manual
+  environment:
+    name: production
+    kubernetes:
+      namespace: production

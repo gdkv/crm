@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${CI_PROJECT_NAME}-app
+  labels:
+    app: ${CI_PROJECT_NAME}-app
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9000
+      protocol: TCP
+  selector:
+    app: ${CI_PROJECT_NAME}-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${CI_PROJECT_NAME}-app
+  labels:
+    app: ${CI_PROJECT_NAME}-app
+spec:
+  selector:
+    matchLabels:
+      app: ${CI_PROJECT_NAME}-app
+  template:
+    metadata:
+      labels:
+        app: ${CI_PROJECT_NAME}-app
+    spec:
+      containers:
+        - name: ${CI_PROJECT_NAME}-app
+          image: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
+          livenessProbe:
+            initialDelaySeconds: 30
+            tcpSocket:
+              port: 9000
+          # lifecycle:
+          #   postStart:
+          #     exec:
+          #       command: ["php", "bin/console", "doctrine:migrations:migrate"]
+          ports:
+          - containerPort: 9000
+          envFrom:
+          - configMapRef:
+              name: ${CI_PROJECT_NAME}-app
+          - secretRef:
+              name: ${CI_PROJECT_NAME}-app
+          env:
+          - name: DATABASE_URL
+            value: postgresql://$(DB_USER):$(DB_PASS)@$(DB_HOST):5432/$(DB_NAME)?serverVersion=11&charset=utf8
+      imagePullSecrets:
+        - name: git-registry-secret
