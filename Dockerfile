@@ -48,4 +48,4 @@ RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
 # Set the default directory inside the container
 WORKDIR /var/www/app
 COPY ./ /var/www/app/
-RUN composer install
+RUN mv .env.test .env && composer install
