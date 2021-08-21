@@ -9,13 +9,13 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: FCGI
     nginx.ingress.kubernetes.io/fastcgi-index: index.php
-    nginx.ingress.kubernetes.io/fastcgi-params-configmap: fcgi-conf
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: ${CI_PROJECT_NAME}-fcgi-conf
     nginx.ingress.kubernetes.io/rewrite-target: /index.php/$1
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For, DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
     nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Length,Content-Range"
-  name: application-service
+  name: crm-api
 spec:
   rules:
   - host: crm-api.service.${DOMAIN_ENV}riamas.ru
@@ -27,4 +27,4 @@ spec:
   tls:
   - hosts:
     - crm-api.service.${DOMAIN_ENV}riamas.ru
-    secretName: application-service-tls
+    secretName: crm-api-tls
