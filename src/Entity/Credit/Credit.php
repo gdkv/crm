@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Application;
+namespace App\Entity\Credit;
 
 use App\Entity\EntityIdTrait;
 use App\Entity\User;

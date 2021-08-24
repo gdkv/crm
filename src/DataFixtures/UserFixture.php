@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use App\DataFixtures\DealerFixture;
 use App\Model\Enum\Status;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -26,7 +27,7 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 'aliasName' => 'Федя Федоров', 
                 'roles' => ['ROLE_SUPERVISOR'], 
                 'plainPassword' => '123456',  
-                '100' => 100, 
+                'mangoId' => 100, 
                 'smsText' => 'Ждем Вас в Автоцентр Северо-Запад.Скидка на автомобили до 40% м.Тушинская Волоколамское шоссе, д 120', 
                 'isWorking' => false, 
                 'isRemote' => true, 
@@ -41,10 +42,10 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 'aliasName' => 'Иван Виктор', 
                 'roles' => ['ROLE_OPERATOR'], 
                 'plainPassword' => '123456',  
-                '100' => 100, 
+                'mangoId' => 100, 
                 'smsText' => 'Ждем Вас в Автоцентр Северо-Запад.Скидка на автомобили до 40% м.Тушинская Волоколамское шоссе, д 120', 
                 'isWorking' => false, 
-                'isRemote' => true, 
+                'isRemote' => false, 
                 'status' => 'WORK',
                 'priority' => 1, 
                 'disabled' => false, 
@@ -56,12 +57,29 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 'aliasName' => 'Федор Виктор', 
                 'roles' => ['ROLE_OPERATOR'], 
                 'plainPassword' => '123456',  
-                '100' => 100, 
+                'mangoId' => 100, 
                 'smsText' => 'Ждем Вас в Автоцентр Северо-Запад.Скидка на автомобили до 40% м.Тушинская Волоколамское шоссе, д 120', 
+                'isWorking' => false, 
+                'isRemote' => false, 
+                'status' => 'WORK',
+                'priority' => 1, 
+                'expiresAt' => new DateTime('2021-08-22 00:00:00'),
+                'disabled' => false, 
+            ],
+            [
+                'username' => 'guest', 
+                'dealer' => '2', 
+                'name' => 'Гость', 
+                'aliasName' => '', 
+                'roles' => ['ROLE_GUEST'], 
+                'plainPassword' => '123456',  
+                'mangoId' => null, 
+                'smsText' => null, 
                 'isWorking' => false, 
                 'isRemote' => true, 
                 'status' => 'WORK',
                 'priority' => 1, 
+                'expiresAt' => new DateTime('2021-08-22 00:00:00'),
                 'disabled' => false, 
             ],
         ];
@@ -76,13 +94,17 @@ class UserFixture extends Fixture implements DependentFixtureInterface
             $user->setAliasName($userItem['aliasName']);
             $user->setRoles($userItem['roles']);
             $user->setPassword($this->passwordEncoder->hashPassword($user, $userItem['plainPassword']));
-            $user->setMangoId($userItem['100']);
+            $user->setMangoId($userItem['mangoId']);
             $user->setSmsText($userItem['smsText']);
             $user->setIsWorking($userItem['isWorking']);
             $user->setIsRemote($userItem['isRemote']);
             $user->setStatus(Status::get($userItem['status']));
             $user->setPriority($userItem['priority']);
             $user->setDisabled($userItem['disabled']);
+
+            if (isset($userItem['expiresAt'])) {
+                $user->setExpiresAt($userItem['expiresAt']);
+            }
             $this->setReference("user-{$i}", $user);
             
             $manager->persist($user);

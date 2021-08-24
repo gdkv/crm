@@ -41,8 +41,8 @@ class ApplicationVoter extends Voter
         }       
   
         return match ($attribute) {
+            // 'APPLICATION_VIEW' => ($this->security->isGranted('ROLE_SUPERVISOR') || $this->security->isGranted('ROLE_OPERATOR')),
             'APPLICATION_ADD',
-            'APPLICATION_VIEW',
             'APPLICATION_EDIT' => ($this->security->isGranted('ROLE_SUPERVISOR') || $this->security->isGranted('ROLE_OPERATOR')),
         };
     }

@@ -26,12 +26,11 @@ class RegisterService {
 
         $user = new User();
 
+        $dealerData = $request->request->all('dealer');
+        $dealer = $this->dealerRepository->find($dealerData['id']);
+
         $user->setUsername($request->request->get('username'));
-        $user->setDealer(
-            $this->dealerRepository->find(
-                $request->request->get('dealer')
-            )
-        );
+        $user->setDealer($dealer);
         $user->setName($request->request->get('name'));
         $user->setAliasName($request->request->get('aliasName'));
         $user->setRoles($request->request->all('roles'));

@@ -8,6 +8,7 @@ use App\Entity\EntityDateTrait;
 use App\Entity\EntityDefaultTrait;
 use App\Entity\EntityIdTrait;
 use App\Entity\Application\Car;
+use App\Entity\Credit\Credit;
 use App\Model\Enum\ApplicationStatus;
 use App\Model\Enum\Reason;
 use App\Model\Enum\Source;

@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Application\Credit;
+use App\Entity\Credit\Credit;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

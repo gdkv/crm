@@ -3,9 +3,14 @@
 namespace App\Security;
 
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use DomainException;
 use Exception;
+use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use Firebase\JWT\SignatureInvalidException;
+use JsonException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,10 +25,12 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use UnexpectedValueException;
 
 class JwtAuthenticator extends AbstractAuthenticator
 {
     public function __construct(
+        private string $trustedIp,
         private EntityManagerInterface $em, 
         private ContainerBagInterface $params, 
         private LoggerInterface $logger,
@@ -38,20 +45,47 @@ class JwtAuthenticator extends AbstractAuthenticator
     public function authenticate(Request $request): PassportInterface
     {
         $apiToken = str_replace('Bearer ', '', $request->headers->get('Authorization'));
+        $jwt = [];
 
         if (null === $apiToken) {
-            // The token header was empty, authentication fails with HTTP Status
-            // Code 401 "Unauthorized"
-            throw new CustomUserMessageAuthenticationException('No API token provided');
+            throw new CustomUserMessageAuthenticationException(
+                message: 'No API token provided'
+            );
         }
 
-        $jwt = (array) JWT::decode(
-            $apiToken, 
-            $this->params->get('jwt_secret'),
-            ['HS256']
-        );
+        try {
+            $jwt = (array) JWT::decode($apiToken, $this->params->get('jwt_secret'), ['HS256']);
+        } catch (UnexpectedValueException $e) {
+            throw new CustomUserMessageAuthenticationException(
+                message: $e->getMessage()
+            );
+        } catch (DomainException $e) {
+            throw new CustomUserMessageAuthenticationException(
+                message: $e->getMessage()
+            );
+        }
 
-        $this->logger->info("jwt ", ["data" => $jwt]);
+        $currentUser = $this->userRepository->findOneBy(['username' => $jwt['username']]);
+
+        if (!$currentUser->getIsRemote()){
+            $trustedIpArray = explode(',', $this->trustedIp);
+            $ip = $request->getClientIp();
+            if (!in_array($ip, $trustedIpArray))
+                throw new CustomUserMessageAuthenticationException(
+                    message: 'Client IP is not at whitelist', 
+                    messageData: ['client IP' => $request->getClientIp(), ], 
+                    code: 401,
+                );
+        }
+
+        if ($currentUser->getExpiresAt() && ((new DateTime("now")) > $currentUser->getExpiresAt())) {
+            throw new CustomUserMessageAuthenticationException(
+                message: 'Client access is expired',
+                messageData: ['expires' => $currentUser->getExpiresAt(), ],
+                code: 401,
+            );
+        }
+
 
         return new SelfValidatingPassport(
             new UserBadge($jwt['username'], function ($userIdentifier) {
