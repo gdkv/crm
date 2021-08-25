@@ -37,14 +37,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $username;
 
     /**
-     * @Assert\All({
-     *     @Assert\NotBlank,
-     *     @Assert\Type("string"),
-     *     @Assert\Choice(callback={Role::class, "values"})
-     * })
-     * @ORM\Column(type="json")
+     * @Assert\Choice(callback={Role::class, "values"})
+     * @ORM\Column(type="Role", nullable=true)
      */
-    private $roles = [];
+    private Role $role;
 
     /**
      * @Assert\Choice(callback={Status::class, "values"})
@@ -114,7 +110,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return [
             'id' => $this->getId(),
             'username' => $this->getUserIdentifier(),
-            'roles' => $this->getRoles(),
+            'role' => $this->getRole()->getReadable(),
             'aliasName' => $this->getAliasName(),
             'name' => $this->getName(),
             'status' => $this->getStatus()->getValue(),
@@ -153,21 +149,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->username;
     }
 
-    /**
-     * @see UserInterface
-     */
+
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $roles = [];
+
+        $roles[] = $this->role->getValue();
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        return $roles;
     }
 
-    public function setRoles(array $roles): self
+    public function getRole(): Role
     {
-        $this->roles = $roles;
+        return $this->role;
+    }
+
+    public function setRoles(Role $role): self
+    {
+        $this->role = $role;
 
         return $this;
     }

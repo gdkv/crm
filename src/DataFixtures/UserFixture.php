@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use App\DataFixtures\DealerFixture;
+use App\Model\Enum\Role;
 use App\Model\Enum\Status;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -25,7 +26,7 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 'dealer' => '1', 
                 'name' => 'Дмитрий Гудков', 
                 'aliasName' => 'Федя Федоров', 
-                'roles' => ['ROLE_SUPERVISOR'], 
+                'role' => 'ROLE_SUPERVISOR', 
                 'plainPassword' => '123456',  
                 'mangoId' => 100, 
                 'smsText' => 'Ждем Вас в Автоцентр Северо-Запад.Скидка на автомобили до 40% м.Тушинская Волоколамское шоссе, д 120', 
@@ -40,7 +41,7 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 'dealer' => '2', 
                 'name' => 'Просто Олег', 
                 'aliasName' => 'Иван Виктор', 
-                'roles' => ['ROLE_OPERATOR'], 
+                'role' => 'ROLE_OPERATOR', 
                 'plainPassword' => '123456',  
                 'mangoId' => 100, 
                 'smsText' => 'Ждем Вас в Автоцентр Северо-Запад.Скидка на автомобили до 40% м.Тушинская Волоколамское шоссе, д 120', 
@@ -55,7 +56,7 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 'dealer' => '1', 
                 'name' => 'Иван Олег', 
                 'aliasName' => 'Федор Виктор', 
-                'roles' => ['ROLE_OPERATOR'], 
+                'role' => 'ROLE_OPERATOR', 
                 'plainPassword' => '123456',  
                 'mangoId' => 100, 
                 'smsText' => 'Ждем Вас в Автоцентр Северо-Запад.Скидка на автомобили до 40% м.Тушинская Волоколамское шоссе, д 120', 
@@ -71,7 +72,7 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 'dealer' => '2', 
                 'name' => 'Гость', 
                 'aliasName' => '', 
-                'roles' => ['ROLE_GUEST'], 
+                'role' => 'ROLE_GUEST', 
                 'plainPassword' => '123456',  
                 'mangoId' => null, 
                 'smsText' => null, 
@@ -92,7 +93,7 @@ class UserFixture extends Fixture implements DependentFixtureInterface
             $user->setDealer($this->getReference("dealer-{$userItem['dealer']}"));
             $user->setName($userItem['name']);
             $user->setAliasName($userItem['aliasName']);
-            $user->setRoles($userItem['roles']);
+            $user->setRoles(Role::get($userItem['role']));
             $user->setPassword($this->passwordEncoder->hashPassword($user, $userItem['plainPassword']));
             $user->setMangoId($userItem['mangoId']);
             $user->setSmsText($userItem['smsText']);

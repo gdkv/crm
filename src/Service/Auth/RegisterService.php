@@ -55,10 +55,7 @@ class RegisterService {
 
         // return $user;
         return [
-            'status' => 'ok', 
-            'data' => [
-                "user" => $user->jsonSerialize(),
-            ],
+            "user" => $user->jsonSerialize(),
         ];
     }
 }

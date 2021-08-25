@@ -8,29 +8,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/dealer', name: 'dealer.')]
 class DealerController extends AbstractController
 {
+    use JsonResponseTrait;
+
     public function __construct(
-        private DealerRepository $dealerRepository
+        private DealerRepository $dealerRepository,
+        private SerializerInterface $serializer,
     ){}
 
     #[Route('', name: 'list')]
     public function index(): Response
     {
-        return $this->json([
-            'status' => 'ok', 
-            'data' => $this->dealerRepository->findArray()
-        ]);
+        return $this->jsonResponse($this->dealerRepository->findAll());
     }
 
     #[Route('/{id}', name: 'view')]
     public function view(Dealer $dealer): Response
     {
-        return $this->json([
-            'status' => 'ok', 
-            'data' => $dealer
-        ]);
+        return $this->jsonResponse($dealer);
     }
 }

@@ -28,12 +28,9 @@ class UserService {
         $jwtData = ($this->createTokenService)($user);
 
         return [
-            'status' => 'ok', 
-            'data' => [
-                "user" => $user->jsonSerialize(),
-                "token" => $jwtData['jwt'],
-                "expiresAt" => $jwtData['expiresAt']->format("Y-m-d H:i:s"),
-            ],
+            "user" => $user->jsonSerialize(),
+            "token" => $jwtData['jwt'],
+            "expiresAt" => $jwtData['expiresAt']->format("Y-m-d H:i:s"),
         ];
 
     }

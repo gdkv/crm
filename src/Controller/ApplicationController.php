@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\JsonResponseTrait;
 use App\Entity\Application\Application;
 use App\Repository\ApplicationRepository;
 use App\Service\Application\ApplicationCreateService;
@@ -12,44 +13,60 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/application', name: 'application.')]
 class ApplicationController extends AbstractController
 {  
+    use JsonResponseTrait;
+    
+    public function __construct(
+        private SerializerInterface $serializer,
+    ){}
+
     #[Route('/{id}', name: 'edit', methods: ['POST'])]
-    #[IsGranted('APPLICATION_EDIT', statusCode: 401, message: 'Access Denied')]
     public function edit(
         Request $request, 
         Application $application, 
         ApplicationUpdateService $applicationUpdateService
     ): JsonResponse
     {
-        return new JsonResponse([
-            ($applicationUpdateService)($request, $application)
-        ]);
+        try {
+            $this->denyAccessUnlessGranted('APPLICATION_EDIT');
+        } catch (AccessDeniedException $e) {
+            return $this->jsonResponseError(message: "Недостаточно прав для редактирования", code: 'access_denied');
+        }
+
+        return $this->jsonResponse(($applicationUpdateService)($request, $application));
     } 
 
     #[Route('/{id}', name: 'view', methods: ['GET', 'HEAD'])]
-    #[IsGranted('APPLICATION_VIEW', statusCode: 401, message: 'Access Denied')]
     public function view(Application $application): JsonResponse
     {
-        return new JsonResponse([
-            'status' => 'ok', 
-            'data' => $application->jsonSerialize()
-        ]);
+        try {
+            $this->denyAccessUnlessGranted('APPLICATION_VIEW');
+        } catch (AccessDeniedException $e) {
+            return $this->jsonResponseError(message: "Недостаточно прав для просмотра", code: 'access_denied');
+        }
+
+        return $this->jsonResponse($application);
     }
 
     #[Route('', name: 'add', methods: ['POST'])]
-    #[IsGranted('APPLICATION_ADD', statusCode: 401, message: 'Access Denied')]
     public function add(
         Request $request, 
         ApplicationCreateService $applicationCreateService
     ): JsonResponse
     {
-        return new JsonResponse([
-            ($applicationCreateService)($request)
-        ]);
+        try {
+            $this->denyAccessUnlessGranted('APPLICATION_ADD');
+        } catch (AccessDeniedException $e) {
+            return $this->jsonResponseError(message: "Недостаточно прав для добавления", code: 'access_denied');
+        }
+
+        return $this->jsonResponse(($applicationCreateService)($request));
     }
 
     #[Route('', name: 'list', methods: ['GET'])]
@@ -62,9 +79,6 @@ class ApplicationController extends AbstractController
         $filters = ($applicationFilterService)($request);
         $limit = (int)$request->query->get('limit', 0);
 
-        return $this->json([
-            'status' => 'ok',
-            'data' => $applicationRepository->findFilteredArray($filters, [], $limit),
-        ]);
+        return $this->jsonResponse($applicationRepository->findFilteredArray($filters, [], $limit));
     }
 }

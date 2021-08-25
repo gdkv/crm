@@ -11,7 +11,7 @@ final class Role extends ReadableEnum
      * кредитная анкета - полный доступ
      * доп. функции (перенос / рассылки / аналитика) - полный доступ
      */
-    public const ROLE_ADMIN = 'admin';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
 
     /**
      * заявка - полный доступ
@@ -19,7 +19,7 @@ final class Role extends ReadableEnum
      * кредитная анкета - полный доступ
      * доп. функции (перенос / рассылки / аналитика) - полный доступ
      */
-    public const ROLE_SUPERVISOR = 'supervisor';
+    public const ROLE_SUPERVISOR = 'ROLE_SUPERVISOR';
 
     /**
      * заявка - полный доступ
@@ -27,7 +27,7 @@ final class Role extends ReadableEnum
      * пользователь - нет доступа
      * доп. функции - нет доступа
      */
-    public const ROLE_OPERATOR = 'operator';
+    public const ROLE_OPERATOR = 'ROLE_OPERATOR';
 
     /**
      * заявка - только просмотр 
@@ -35,7 +35,7 @@ final class Role extends ReadableEnum
      * пользователь - нет доступа
      * доп. функции - нет доступа
      */
-    public const ROLE_CREDIT = 'credit';
+    public const ROLE_CREDIT = 'ROLE_CREDIT';
 
     /**
      * заявка - только просмотр 
@@ -43,7 +43,7 @@ final class Role extends ReadableEnum
      * пользователь - нет доступа
      * доп. функции - нет доступа
      */
-    public const ROLE_MANAGER = 'manager';
+    public const ROLE_MANAGER = 'ROLE_MANAGER';
 
     /**
      * заявка - только просмотр + смена статуса
@@ -51,7 +51,7 @@ final class Role extends ReadableEnum
      * пользователь - нет доступа
      * доп. функции - нет доступа
      */
-    public const ROLE_RECEPTION = 'reception';
+    public const ROLE_RECEPTION = 'ROLE_RECEPTION';
 
     /**
      * заявка - только просмотр (всех заявок?)
@@ -60,7 +60,7 @@ final class Role extends ReadableEnum
      * доп. функции - нет доступа
      * ? ограничения в дате действия аккаунта
      */
-    public const ROLE_GUEST = 'guest';
+    public const ROLE_GUEST = 'ROLE_GUEST';
 
     public static function values(): array
     {
@@ -78,13 +78,13 @@ final class Role extends ReadableEnum
     public static function readables(): array
     {
         return [
-            self::ROLE_ADMIN => 'Администратор',
-            self::ROLE_SUPERVISOR => 'Руководитель',
-            self::ROLE_OPERATOR => 'Оператор',
-            self::ROLE_CREDIT => 'Кредитный менеджер',
-            self::ROLE_MANAGER => 'Менеджер по продажам',
-            self::ROLE_RECEPTION => 'Ресепшионист',
-            self::ROLE_GUEST => 'Гостевой',
+            self::ROLE_ADMIN => 'admin',
+            self::ROLE_SUPERVISOR => 'supervisor',
+            self::ROLE_OPERATOR => 'operator',
+            self::ROLE_CREDIT => 'credit',
+            self::ROLE_MANAGER => 'manager',
+            self::ROLE_RECEPTION => 'reception',
+            self::ROLE_GUEST => 'guest',
         ];
     }
 }

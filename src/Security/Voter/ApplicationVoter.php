@@ -38,10 +38,10 @@ class ApplicationVoter extends Voter
 
         if (!$user instanceof UserInterface) {
             return false;
-        }       
+        }    
   
         return match ($attribute) {
-            // 'APPLICATION_VIEW' => ($this->security->isGranted('ROLE_SUPERVISOR') || $this->security->isGranted('ROLE_OPERATOR')),
+            'APPLICATION_VIEW' => true,
             'APPLICATION_ADD',
             'APPLICATION_EDIT' => ($this->security->isGranted('ROLE_SUPERVISOR') || $this->security->isGranted('ROLE_OPERATOR')),
         };
