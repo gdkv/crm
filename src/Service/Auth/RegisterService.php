@@ -2,6 +2,7 @@
 namespace App\Service\Auth;
 
 use App\Entity\User;
+use App\Model\Enum\Role;
 use App\Model\Enum\Status;
 use App\Repository\DealerRepository;
 use App\Repository\UserRepository;
@@ -20,7 +21,7 @@ class RegisterService {
         private EntityManagerInterface $em,
     ) {}
 
-    public function __invoke(Request $request): array
+    public function __invoke(Request $request): User
     {
         $request->request = new InputBag($request->toArray());
 
@@ -33,7 +34,9 @@ class RegisterService {
         $user->setDealer($dealer);
         $user->setName($request->request->get('name'));
         $user->setAliasName($request->request->get('aliasName'));
-        $user->setRoles($request->request->all('roles'));
+        $user->setRoles(
+            Role::get($request->request->get('role'))
+        );
         $user->setPassword(
             $this->encoder->hashPassword(
                 $user, 
@@ -54,8 +57,6 @@ class RegisterService {
         $this->em->flush();
 
         // return $user;
-        return [
-            "user" => $user->jsonSerialize(),
-        ];
+        return $user;
     }
 }

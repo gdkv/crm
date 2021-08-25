@@ -11,6 +11,7 @@ class UserService {
     public function __construct(
         private Security $security,
         private CreateTokenService $createTokenService,
+        private LoginService $loginService,
         private UserRepository $userRepository,
     ) {}
 
@@ -25,13 +26,6 @@ class UserService {
         
         $user = $this->userRepository->findOneBy(['username' => $user->getUserIdentifier(),]);
 
-        $jwtData = ($this->createTokenService)($user);
-
-        return [
-            "user" => $user->jsonSerialize(),
-            "token" => $jwtData['jwt'],
-            "expiresAt" => $jwtData['expiresAt']->format("Y-m-d H:i:s"),
-        ];
-
+        return ($this->loginService)($user);
     }
 }
