@@ -87,7 +87,6 @@ class Application
 
     /**
      * @ORM\ManyToOne(targetEntity=Car::class)
-     * @Ignore()
      */
     private Car $car;
 

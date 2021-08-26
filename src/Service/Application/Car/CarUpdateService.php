@@ -2,24 +2,19 @@
 namespace App\Service\Application\Car;
 
 use App\Entity\Application\Car;
-use App\Entity\Application\Client;
-use App\Entity\User;
-use App\Model\Enum\Gender;
-use App\Model\Enum\Status;
-use App\Repository\DealerRepository;
-use App\Repository\UserRepository;
-use App\Service\JWT\CreateTokenService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\InputBag;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class CarUpdateService {
     public function __construct(
+        private EntityManagerInterface $em,
     ) {}
 
-    public function __invoke(array $carData, Car $car): Car
+    public function __invoke(array $carData, ?Car $car = null): Car
     {
+        if (!$car) {
+            $car = new Car();
+            $this->em->persist($car);
+        }
         $car->setBrand(isset($carData['brand']) ? $carData['brand'] : null);
         $car->setModel(isset($carData['model']) ? $carData['model'] : null);
         $car->setEquipment(isset($carData['equipment']) ? $carData['equipment'] : null);
@@ -34,9 +29,7 @@ class CarUpdateService {
         $car->setIsUsed(isset($carData['isUsed']) ? $carData['isUsed'] : null);
         $car->setAdditionalData(isset($carData['additionalData']) ? $carData['additionalData'] : null);
 
-        // $this->em->persist($car);
         $this->em->flush();
-
 
         return $car;
     }

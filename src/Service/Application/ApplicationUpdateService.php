@@ -41,11 +41,13 @@ class ApplicationUpdateService {
         $request->request = new InputBag($request->toArray());
 
         $applicationData = [
+            'actionAt' => new DateTime($request->request->get('actionAt', 'now')),
             'client' => $request->request->all('client'),
             'car' => $request->request->all('car'),
-            'user' => $this->security->getUser(),
+            'operator' => $request->request->all('operator'),
             'status' => $request->request->get('status'),
             'additionalCar' => $request->request->all('additionalCars'),
+            'isCredit' => $request->request->get('isCredit', null),
             'tradeIn' => $request->request->get('isTradeIn', false),
             'gift' => $request->request->all('gift'),
             'attempts' => $request->request->all('attempts'),
@@ -55,20 +57,22 @@ class ApplicationUpdateService {
 
         $client = ($this->clientUpdateService)($applicationData['client'], $application->getClient());
         $car = ($this->carUpdateService)($applicationData['car'], $application->getCar());
-        // $user = $this->userRepository->find($applicationData['user']);
-
-        $application = new Application();
+        $operator = $this->userRepository->find($applicationData['operator']['id']);
 
         // $application->setPushedAt(new DateTime('now'));
-        $application->setActionAt(isset($applicationData['actionAt']) ? new DateTime($applicationData['actionAt']) : new DateTime('+15 minutes'));
-        // $application->setDealer($user->getDealer());
-        $application->setType(Type::get('MANUAL'));
+        $application->setActionAt($applicationData['actionAt']);
         $application->setStatus(ApplicationStatus::get($applicationData['status']));
         $application->setClient($client);
-        // $application->setOperator($user);
+        $application->setOperator($operator);
         $application->setCar($car);
+
         array_map(
-            fn($carData) => $application->addAdditionalCar(($this->carCreateService)($carData)), 
+            fn($carData) => $application->addAdditionalCar(
+                ($this->carUpdateService)(
+                    carData: $carData,
+                    car: (isset($carData['id']) ? $this->carRepository->find($carData['id']) : null)
+                ),
+            ), 
             $applicationData['additionalCar']
         );
 
