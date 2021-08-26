@@ -27,8 +27,16 @@ class DealerController extends AbstractController
     }
 
     #[Route('/{id}', name: 'view')]
-    public function view(Dealer $dealer): Response
+    public function view(?Dealer $dealer): Response
     {
+        if(!$dealer) {
+            return $this->jsonResponseError(
+                message: 'Dealer not found', 
+                code: 'dealer_not_found', 
+                httpCode: 404
+            );
+        }
+
         return $this->jsonResponse($dealer);
     }
 }

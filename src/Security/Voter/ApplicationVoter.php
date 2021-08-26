@@ -41,9 +41,18 @@ class ApplicationVoter extends Voter
         }    
   
         return match ($attribute) {
-            'APPLICATION_VIEW' => true,
+            'APPLICATION_VIEW' => (
+                $this->security->isGranted('ROLE_SUPERVISOR') || 
+                $this->security->isGranted('ROLE_OPERATOR') ||
+                $this->security->isGranted('ROLE_CREDIT') ||
+                $this->security->isGranted('ROLE_MANAGER') ||
+                $this->security->isGranted('ROLE_GUEST')
+            ),
             'APPLICATION_ADD',
-            'APPLICATION_EDIT' => ($this->security->isGranted('ROLE_SUPERVISOR') || $this->security->isGranted('ROLE_OPERATOR')),
+            'APPLICATION_EDIT' => (
+                $this->security->isGranted('ROLE_SUPERVISOR') ||
+                $this->security->isGranted('ROLE_OPERATOR') 
+            ),
         };
     }
 }

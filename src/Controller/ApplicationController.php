@@ -76,6 +76,12 @@ class ApplicationController extends AbstractController
         ApplicationFilterService $applicationFilterService
     ): Response
     {
+        try {
+            $this->denyAccessUnlessGranted('APPLICATION_VIEW');
+        } catch (AccessDeniedException $e) {
+            return $this->jsonResponseError(message: "Недостаточно прав для просмотра", code: 'access_denied');
+        }
+
         $filters = ($applicationFilterService)($request);
         $limit = (int)$request->query->get('limit', 0);
 
