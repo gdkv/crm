@@ -38,7 +38,7 @@ class ApplicationListController extends AbstractController
         $filters = ($applicationFilterService)($request);
         $limit = (int)$request->query->get('limit', 0);
 
-        return $this->jsonResponse($applicationRepository->findFilteredArray($filters, [], $limit));
+        return $this->jsonResponse($applicationRepository->findFiltered($filters, [], $limit));
     }
 
 }

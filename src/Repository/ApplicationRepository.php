@@ -20,7 +20,7 @@ class ApplicationRepository extends ServiceEntityRepository
     }
 
 
-    public function findFilteredArray($filters = [], $orders = [], $limit = 0)
+    public function findFiltered($filters = [], $orders = [], $limit = 0)
     {
         $query = $this->createQueryBuilder('a');
 

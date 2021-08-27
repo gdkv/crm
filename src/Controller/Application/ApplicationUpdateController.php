@@ -45,12 +45,12 @@ class ApplicationUpdateController extends AbstractController
             );
         }
 
-        // Try to edit if granted
-        // try {
+        // try to edit if granted
+        try {
             $application = ($applicationUpdateService)($request, $application);
-        // } catch (Throwable $e) {
-        //     return $this->jsonResponseError(message: $e->getMessage(), code: 'pdo_error');
-        // }
+        } catch (Throwable $e) {
+            return $this->jsonResponseError(message: $e->getMessage(), code: 'pdo_error');
+        }
 
         return $this->jsonResponse($application);
     } 

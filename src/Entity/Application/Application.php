@@ -71,7 +71,6 @@ class Application
      */
     private Client $client;
 
-
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="applicationOperator")
      * @ORM\JoinColumn(nullable=true)
@@ -92,7 +91,6 @@ class Application
 
     /**
      * @ORM\ManyToMany(targetEntity=Car::class, inversedBy="applications")
-     * @Ignore()
      */
     private Collection $additionalCars;
 
