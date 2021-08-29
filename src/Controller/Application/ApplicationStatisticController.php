@@ -38,12 +38,7 @@ class ApplicationStatisticController extends AbstractController
         $filters = ($applicationFilterService)($request);
         $limit = (int)$request->query->get('limit', 0);
 
-        return $this->jsonResponse([
-            'call' => 100,
-            'red' => 20,
-            'meet' => 5,
-            'arrive' => 9,
-        ]);
+        return $this->jsonResponse($applicationRepository->findStatistic($filters, [], $limit));
     }
 
 }
