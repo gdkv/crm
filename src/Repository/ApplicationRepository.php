@@ -63,12 +63,12 @@ class ApplicationRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('a');
 
         $query->select([
-            
+            'a.status as status', 
+            'count(a.status) as count'
         ]);
-        $query->leftJoin('a.client', 'cl');
-        $query->leftJoin('a.car', 'cr');
 
         $query
+            ->groupBy('status')
             ->andWhere("a.actionAt >= :dateStart")
             ->setParameter("dateStart", $filters['date']->format("Y-m-d 00:00:00"))
             ->andWhere("a.actionAt <= :dateFinish")
@@ -89,8 +89,6 @@ class ApplicationRepository extends ServiceEntityRepository
                 ->andWhere("{$field} = :{$key}")
                 ->setParameter($key, $value);
         }
-
-        $query->addOrderBy('a.pushedAt', 'DESC');
         
         if ($limit > 0 ) {
             $query->setMaxResults($limit);
