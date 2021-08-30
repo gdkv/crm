@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/dealer', name: 'dealer.')]
@@ -23,12 +24,24 @@ class DealerController extends AbstractController
     #[Route('', name: 'list')]
     public function index(): Response
     {
+        try {
+            $this->denyAccessUnlessGranted('APPLICATION_VIEW');
+        } catch (AccessDeniedException $e) {
+            return $this->jsonResponseError(message: "Недостаточно прав для просмотра", code: 'access_denied');
+        }
+
         return $this->jsonResponse($this->dealerRepository->findAll());
     }
 
     #[Route('/{id}', name: 'view')]
     public function view(?Dealer $dealer): Response
     {
+        try {
+            $this->denyAccessUnlessGranted('APPLICATION_VIEW');
+        } catch (AccessDeniedException $e) {
+            return $this->jsonResponseError(message: "Недостаточно прав для просмотра", code: 'access_denied');
+        }
+        
         if(!$dealer) {
             return $this->jsonResponseError(
                 message: 'Dealer not found', 

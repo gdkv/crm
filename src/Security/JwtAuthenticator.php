@@ -48,21 +48,15 @@ class JwtAuthenticator extends AbstractAuthenticator
         $jwt = [];
 
         if (null === $apiToken) {
-            throw new CustomUserMessageAuthenticationException(
-                message: 'No API token provided'
-            );
+            throw new CustomUserMessageAuthenticationException(message: 'token_not_found');
         }
 
         try {
             $jwt = (array) JWT::decode($apiToken, $this->params->get('jwt_secret'), ['HS256']);
         } catch (UnexpectedValueException $e) {
-            throw new CustomUserMessageAuthenticationException(
-                message: $e->getMessage()
-            );
+            throw new CustomUserMessageAuthenticationException(message: 'wrong_token');
         } catch (DomainException $e) {
-            throw new CustomUserMessageAuthenticationException(
-                message: $e->getMessage()
-            );
+            throw new CustomUserMessageAuthenticationException(message: 'internal_error');
         }
 
         $currentUser = $this->userRepository->findOneBy(['username' => $jwt['username']]);
@@ -72,17 +66,17 @@ class JwtAuthenticator extends AbstractAuthenticator
             $ip = $request->getClientIp();
             if (!in_array($ip, $trustedIpArray))
                 throw new CustomUserMessageAuthenticationException(
-                    message: 'Client IP is not at whitelist', 
+                    message: 'сlient_not_at_whitelist', 
                     messageData: ['client IP' => $request->getClientIp(), ], 
-                    code: 401,
+                    code: 403,
                 );
         }
 
         if ($currentUser->getExpiresAt() && ((new DateTime("now")) > $currentUser->getExpiresAt())) {
             throw new CustomUserMessageAuthenticationException(
-                message: 'Client access is expired',
+                message: 'access_is_expired',
                 messageData: ['expires' => $currentUser->getExpiresAt(), ],
-                code: 401,
+                code: 403,
             );
         }
 

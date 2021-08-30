@@ -23,16 +23,22 @@ class UserGetService {
         if($request) {
             $request->request = new InputBag($request->toArray());
             $userName = $request->request->get('username');
+            $userPassword = $request->request->get('password');
             $this->user = $this->userRepository->findOneBy(['username' => $userName,]);
 
-            if(!$this->encoder->isPasswordValid($this->user, $request->request->get('password'))){
+            if($userPassword && !$this->encoder->isPasswordValid($this->user, $userPassword)){
                 $this->user = null;
             }
 
         } else {
             $user = $this->security->getUser();
-            $userName = $user->getUserIdentifier();
-            $this->user = $this->userRepository->findOneBy(['username' => $userName,]);
+            if ($user) {
+                $userName = $user->getUserIdentifier();
+                $this->user = $this->userRepository->findOneBy(['username' => $userName,]);
+            } else {
+                $this->user = null;
+            }
+
         }
 
         return $this->user;

@@ -35,7 +35,7 @@ class RegisterController extends AbstractController
             return $this->jsonResponseError(
                 message: "access_denied", 
                 code: "Недостаточно прав для заведения нового пользователя",
-                httpCode: 401
+                httpCode: 403
             );
         }
 
