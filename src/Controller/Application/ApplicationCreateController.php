@@ -32,7 +32,7 @@ class ApplicationCreateController extends AbstractController
         try {
             $this->denyAccessUnlessGranted('APPLICATION_ADD');
         } catch (AccessDeniedException $e) {
-            return $this->jsonResponseError(message: "Недостаточно прав для добавления", code: 'access_denied');
+            return $this->jsonResponseError(message: "Недостаточно прав для добавления", code: 'access_denied', httpCode: 401);
         }
 
         // Try to edit if granted

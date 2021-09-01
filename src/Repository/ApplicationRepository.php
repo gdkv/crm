@@ -94,6 +94,6 @@ class ApplicationRepository extends ServiceEntityRepository
             $query->setMaxResults($limit);
         }
 
-        return $query->getQuery()->getResult();
+        return $query->getQuery()->getArrayResult();
     }
 }

@@ -80,7 +80,6 @@ class Application
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="salesManager")
      * @ORM\JoinColumn(nullable=true)
-     * @Ignore()
      */
     private ?User $manager = null;
 

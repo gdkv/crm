@@ -32,7 +32,7 @@ class ApplicationListController extends AbstractController
         try {
             $this->denyAccessUnlessGranted('APPLICATION_VIEW');
         } catch (AccessDeniedException $e) {
-            return $this->jsonResponseError(message: "Недостаточно прав для просмотра", code: 'access_denied');
+            return $this->jsonResponseError(message: "Недостаточно прав для просмотра", code: 'access_denied', httpCode: 401);
         }
 
         $filters = ($applicationFilterService)($request);

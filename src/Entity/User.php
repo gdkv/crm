@@ -110,7 +110,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return [
             'id' => $this->getId(),
             'username' => $this->getUserIdentifier(),
-            'role' => $this->getRole()->getReadable(),
+            // 'role' => $this->getRole()->getReadable(),
+            'role' => $this->getRole(),
             'aliasName' => $this->getAliasName(),
             'name' => $this->getName(),
             'status' => $this->getStatus()->getValue(),
@@ -141,15 +142,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * A visual identifier that represents this user.
-     *
      * @see UserInterface
+     * @Ignore()
      */
     public function getUserIdentifier(): string
     {
         return (string) $this->username;
     }
 
-
+    /**
+     * @Ignore()
+     */
     public function getRoles(): array
     {
         $roles = [];
@@ -161,9 +164,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $roles;
     }
 
-    public function getRole(): Role
+    public function getRole(): string
     {
-        return $this->role;
+        return $this->role->getReadable();
     }
 
     public function setRoles(Role $role): self
@@ -193,6 +196,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
      *
      * @see UserInterface
+     * @Ignore()
      */
     public function getSalt(): ?string
     {

@@ -33,7 +33,7 @@ class ApplicationUpdateController extends AbstractController
         try {
             $this->denyAccessUnlessGranted('APPLICATION_EDIT');
         } catch (AccessDeniedException $e) {
-            return $this->jsonResponseError(message: "Недостаточно прав для редактирования", code: 'access_denied');
+            return $this->jsonResponseError(message: "Недостаточно прав для редактирования", code: 'access_denied', httpCode: 401);
         }
 
         // 404 if application not found
