@@ -10,3 +10,4 @@ elao_enum:
             Source: App\Model\Enum\Source
             Reason: App\Model\Enum\Reason
             Type: App\Model\Enum\Type
+            CreditStatus: App\Model\Enum\CreditStatus
