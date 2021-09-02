@@ -3,26 +3,21 @@
 namespace App\Security;
 
 use App\Repository\UserRepository;
-use DateTime;
+use App\Service\JWT\GetTokenService;
+use App\Service\User\UserCheckAccessService;
 use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
-use Exception;
-use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
-use Firebase\JWT\SignatureInvalidException;
-use JsonException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use UnexpectedValueException;
@@ -31,10 +26,12 @@ class JwtAuthenticator extends AbstractAuthenticator
 {
     public function __construct(
         private string $trustedIp,
+        private GetTokenService $getTokenService,
         private EntityManagerInterface $em, 
         private ContainerBagInterface $params, 
         private LoggerInterface $logger,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private UserCheckAccessService $userCheckAccessService,
     ){}
 
     public function supports(Request $request): ?bool
@@ -44,12 +41,7 @@ class JwtAuthenticator extends AbstractAuthenticator
 
     public function authenticate(Request $request): PassportInterface
     {
-        $apiToken = str_replace('Bearer ', '', $request->headers->get('Authorization'));
-        $jwt = [];
-
-        if (null === $apiToken) {
-            throw new CustomUserMessageAuthenticationException(message: 'token_not_found');
-        }
+        $apiToken =($this->getTokenService)($request);
 
         try {
             $jwt = (array) JWT::decode($apiToken, $this->params->get('jwt_secret'), ['HS256']);
@@ -59,27 +51,7 @@ class JwtAuthenticator extends AbstractAuthenticator
             throw new CustomUserMessageAuthenticationException(message: 'internal_error');
         }
 
-        $currentUser = $this->userRepository->findOneBy(['username' => $jwt['username']]);
-
-        if (!$currentUser->getIsRemote()){
-            $trustedIpArray = explode(',', $this->trustedIp);
-            $ip = $request->getClientIp();
-            if (!in_array($ip, $trustedIpArray))
-                throw new CustomUserMessageAuthenticationException(
-                    message: 'сlient_not_at_whitelist', 
-                    messageData: ['client IP' => $request->getClientIp(), ], 
-                    code: 403,
-                );
-        }
-
-        if ($currentUser->getExpiresAt() && ((new DateTime("now")) > $currentUser->getExpiresAt())) {
-            throw new CustomUserMessageAuthenticationException(
-                message: 'access_is_expired',
-                messageData: ['expires' => $currentUser->getExpiresAt(), ],
-                code: 403,
-            );
-        }
-
+        ($this->userCheckAccessService)($request, $jwt['username']);
 
         return new SelfValidatingPassport(
             new UserBadge($jwt['username'], function ($userIdentifier) {
