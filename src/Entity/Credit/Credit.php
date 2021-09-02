@@ -39,4 +39,52 @@ class Credit
      * @ORM\OneToOne(targetEntity=AllowedToDrive::class)
      */
     private AllowedToDrive $allowedToDrive;
+
+    public function getCreditStatus()
+    {
+        return $this->creditStatus;
+    }
+
+    public function setCreditStatus($creditStatus): self
+    {
+        $this->creditStatus = $creditStatus;
+
+        return $this;
+    }
+
+    public function getManager(): ?User
+    {
+        return $this->manager;
+    }
+
+    public function setManager(?User $manager): self
+    {
+        $this->manager = $manager;
+
+        return $this;
+    }
+
+    public function getCreditForm(): ?CreditForm
+    {
+        return $this->creditForm;
+    }
+
+    public function setCreditForm(?CreditForm $creditForm): self
+    {
+        $this->creditForm = $creditForm;
+
+        return $this;
+    }
+
+    public function getAllowedToDrive(): ?AllowedToDrive
+    {
+        return $this->allowedToDrive;
+    }
+
+    public function setAllowedToDrive(?AllowedToDrive $allowedToDrive): self
+    {
+        $this->allowedToDrive = $allowedToDrive;
+
+        return $this;
+    }
 }
