@@ -12,7 +12,7 @@ class CreateTokenService {
 
     public function __invoke(User $user): array
     {
-        $lifeTime = (new DateTime())->modify("+5 minutes");
+        $lifeTime = (new DateTime())->modify("+6 hours");
         $jwt = JWT::encode(
             [
                 "username" => $user->getUserIdentifier(),
