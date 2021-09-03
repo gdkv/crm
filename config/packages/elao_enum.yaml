@@ -11,3 +11,5 @@ elao_enum:
             Reason: App\Model\Enum\Reason
             Type: App\Model\Enum\Type
             CreditStatus: App\Model\Enum\CreditStatus
+            DriverCategory: App\Model\Enum\DriverCategory
+            FamilyStatus: App\Model\Enum\FamilyStatus

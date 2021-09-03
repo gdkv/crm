@@ -3,7 +3,9 @@
 namespace App\Entity\Credit;
 
 use App\Entity\EntityIdTrait;
+use App\Entity\Credit\CreditForm;
 use App\Repository\DocumentRepository;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,6 +42,12 @@ class Document
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $code;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=CreditForm::class, inversedBy="previousPassports")
+     * @Ignore()
+     */
+    private $creditForm;
 
     public function getSeries(): ?string
     {
@@ -97,6 +105,18 @@ class Document
     public function setCode(?string $code): self
     {
         $this->code = $code;
+
+        return $this;
+    }
+
+    public function getCreditForm(): ?CreditForm
+    {
+        return $this->creditForm;
+    }
+
+    public function setCreditForm(?CreditForm $creditForm): self
+    {
+        $this->creditForm = $creditForm;
 
         return $this;
     }

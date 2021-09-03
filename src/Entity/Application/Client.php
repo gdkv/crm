@@ -4,6 +4,7 @@ namespace App\Entity\Application;
 
 use App\Entity\EntityIdTrait;
 use App\Entity\EntityNameTrait;
+use App\Entity\Region;
 use App\Model\Enum\Gender;
 use App\Repository\ClientRepository;
 use DateTimeInterface;
@@ -64,9 +65,10 @@ class Client
     private array $additional;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\ManyToOne(targetEntity=Region::class, inversedBy="clients")
+     * @ORM\JoinColumn(nullable=true)
      */
-    private ?string $region;
+    private Region $region;
 
     public function jsonSerialize()
     {
@@ -167,12 +169,12 @@ class Client
         return $this;
     }
 
-    public function getRegion(): ?string
+    public function getRegion(): ?Region
     {
         return $this->region;
     }
 
-    public function setRegion(?string $region): self
+    public function setRegion(?Region $region): self
     {
         $this->region = $region;
 
