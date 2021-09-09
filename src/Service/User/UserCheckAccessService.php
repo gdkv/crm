@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 
 class UserCheckAccessService {
     public function __construct(
+        private string $trustedIp,
         private UserRepository $userRepository,
     ) {}
 

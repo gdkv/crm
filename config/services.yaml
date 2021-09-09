@@ -14,10 +14,10 @@ services:
             - '../src/Kernel.php'
             - '../src/Tests/'
 
-    App\Security\JwtAuthenticator:
-        arguments:
-            $trustedIp: '%env(TRUSTED_IP)%'
-
     App\Service\JWT\CreateTokenService:
         arguments:
             $jwtSecret: '%env(JWT_SECRET)%'
+
+    App\Service\User\UserCheckAccessService:
+        arguments:
+            $trustedIp: '%env(TRUSTED_IP)%'
