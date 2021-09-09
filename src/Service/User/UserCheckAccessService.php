@@ -1,12 +1,14 @@
 <?php
 namespace App\Service\User;
 
+use App\Repository\UserRepository;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 class UserCheckAccessService {
     public function __construct(
+        private UserRepository $userRepository,
     ) {}
 
     public function __invoke(Request $request, string $username = ""): void
