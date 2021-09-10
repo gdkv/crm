@@ -52,7 +52,7 @@ class CreditForm
      * })
      * @ORM\Column(type="simple_array", nullable=true)
      */
-    private ?array $phoneNumber = [];
+    private ?array $phone = [];
 
     /**
      * @ORM\OneToOne(targetEntity=Document::class)

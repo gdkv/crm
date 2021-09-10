@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Model\Enum\Gender;
 use App\Model\Enum\Status;
 use App\Repository\DealerRepository;
+use App\Repository\RegionRepository;
 use App\Repository\UserRepository;
 use App\Service\JWT\CreateTokenService;
 use DateTime;
@@ -21,6 +22,7 @@ class ClientUpdateService {
         private UserPasswordHasherInterface $encoder, 
         private DealerRepository $dealerRepository,
         private EntityManagerInterface $em,
+        private RegionRepository $regionRepository,
     ) {}
 
     public function __invoke(array $clientData, Client $client): Client
@@ -33,7 +35,11 @@ class ClientUpdateService {
         $client->setPhone($clientData['phone']);
         $client->setDateOfBirth(isset($clientData['dateOfBirth']) ? new DateTime($clientData['dateOfBirth']) : null);
         $client->setAdditional($clientDataAdditional);
-        $client->setRegion(isset($clientData['region']) ? $clientData['region'] : null);
+        // $client->setRegion(isset($clientData['region']) ? $clientData['region'] : null);
+        if(isset($clientData['region']['id'])){
+            $region = $this->regionRepository->find($clientData['region']['id']);
+            $client->setRegion($region);
+        }
 
         if ($clientData['gender'])
             $client->setGender(Gender::get($clientData['gender']));

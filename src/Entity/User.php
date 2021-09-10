@@ -105,26 +105,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $creditManager;
 
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->getId(),
-            'username' => $this->getUserIdentifier(),
-            // 'role' => $this->getRole()->getReadable(),
-            'role' => $this->getRole(),
-            'aliasName' => $this->getAliasName(),
-            'name' => $this->getName(),
-            'status' => $this->getStatus()->getValue(),
-            'dealer' => $this->getDealer()->jsonSerialize(),
-            'mangoId' => $this->getMangoId(),
-            'smsText' => $this->getSmsText(),
-            'isWorking' => $this->getIsWorking(),
-            'isRemote' => $this->getIsRemote(),
-            'createdAt' => $this->getCreatedAt(),
-            'updatedAt' => $this->getUpdatedAt(),
-        ];
-    }
-
     /**
      * @deprecated since Symfony 5.3, use getUserIdentifier instead
      */

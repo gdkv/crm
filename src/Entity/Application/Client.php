@@ -34,9 +34,13 @@ class Client
     private ?string $patronymic;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @Assert\Type("array"),
+     * @Assert\All({
+     *      @Assert\Type("string")
+     * })
+     * @ORM\Column(type="simple_array", nullable=true)
      */
-    private string $phone;
+    private ?array $phone = [];
 
     /**
      * @Assert\Choice(callback={Gender::class, "values"})
@@ -68,22 +72,7 @@ class Client
      * @ORM\ManyToOne(targetEntity=Region::class, inversedBy="clients")
      * @ORM\JoinColumn(nullable=true)
      */
-    private Region $region;
-
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->getId(),
-            'name' =>$this->getName(),
-            'surname' => $this->getSurname(),
-            'patronymic' => $this->getPatronymic(),
-            'phone' => $this->getPhone(),
-            'gender' => $this->getGender()->getValue(),
-            'dateOfBirth' => $this->getDateOfBirth(),
-            'additional' => $this->getAdditional(),
-            'region' => $this->getRegion(),
-        ];
-    }
+    private ?Region $region;
 
     public function getName(): ?string
     {
@@ -121,12 +110,12 @@ class Client
         return $this;
     }
 
-    public function getPhone(): ?string
+    public function getPhone(): ?array
     {
         return $this->phone;
     }
 
-    public function setPhone(string $phone): self
+    public function setPhone(array $phone): self
     {
         $this->phone = $phone;
 

@@ -25,7 +25,6 @@ use UnexpectedValueException;
 class JwtAuthenticator extends AbstractAuthenticator
 {
     public function __construct(
-        private string $trustedIp,
         private GetTokenService $getTokenService,
         private EntityManagerInterface $em, 
         private ContainerBagInterface $params, 

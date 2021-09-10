@@ -33,17 +33,6 @@ class Dealer
         $this->users = new ArrayCollection();
     }
 
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'slug' => $this->getSlug(),
-            'priority' => $this->getPriority(),
-            'disabled' => $this->getDisabled(),
-        ];
-    }
-
     public function getSlug(): ?string
     {
         return $this->slug;

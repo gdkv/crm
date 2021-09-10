@@ -4,16 +4,17 @@ namespace App\Entity\Application;
 
 use App\Entity\User;
 use App\Entity\Dealer;
+use App\Entity\Credit\Credit;
+use App\Entity\Application\Car;
 use App\Entity\EntityDateTrait;
 use App\Entity\EntityDefaultTrait;
 use App\Entity\EntityIdTrait;
-use App\Entity\Application\Car;
-use App\Entity\Credit\Credit;
 use App\Model\Enum\ApplicationStatus;
 use App\Model\Enum\Reason;
 use App\Model\Enum\Source;
 use App\Model\Enum\Type;
 use App\Repository\ApplicationRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -84,14 +85,12 @@ class Application
     private ?User $manager = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Car::class)
-     */
-    private Car $car;
-
-    /**
+     * @Assert\All({
+     *     @Assert\Type(Car::class)
+     * })
      * @ORM\ManyToMany(targetEntity=Car::class, inversedBy="applications")
      */
-    private Collection $additionalCars;
+    private ?iterable $car = [];
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -170,58 +169,84 @@ class Application
     private ?Credit $credit = null;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Comment::class, inversedBy="applications")
+     * @Assert\All({
+     *     @Assert\Type(Comment::class)
+     * })
+     * @ORM\ManyToMany(targetEntity=Comment::class)
+     * Ignore()
      */
-    private Collection $comments;
+    private ?iterable $comments = [];
 
     /**
-     * @ORM\ManyToMany(targetEntity=Target::class, inversedBy="applications")
+     * @Assert\All({
+     *     @Assert\Type(Target::class)
+     * })
+     * @ORM\ManyToMany(targetEntity=Target::class)
+     * Ignore()
      */
-    private Collection $targets;
+    private ?iterable $targets = [];
 
     /**
      * @ORM\Column(type="boolean")
      */
     private bool $isProcessed = false;
 
-    public function __construct()
-    {
-        $this->additionalCars = new ArrayCollection();
-        $this->comments = new ArrayCollection();
-        $this->targets = new ArrayCollection();
+    public function __construct(
+        DateTimeInterface $actionAt,
+        ?DateTimeInterface $arrivedAt,
+        ?Dealer $dealer,
+        ?Client $client,
+        ?User $operator,
+        ?User $manager,
+        ?array $cars,
+        Type $type,
+        ApplicationStatus $status,
+        ?bool $isCredit,
+        bool $isTradeIn,
+        ?array $attempts,
+        array $gift,
+        ?Source $source,
+        ?Reason $reason,
+        bool $isProcessed
+    ) {
+        $this->pushedAt = new DateTime('now');
+        $this->update($actionAt, $arrivedAt, $dealer, $client, $operator, $manager, $cars, $type, $status, $isCredit, $isTradeIn, $attempts, $gift, $source, $reason, $isProcessed);
     }
 
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->getId(),
-            'dealer' => $this->getDealer()->jsonSerialize(),
-            'createdAt' => $this->getCreatedAt(),
-            'updatedAt' => $this->getUpdatedAt(),
-            'pushedAt' => $this->getPushedAt(),
-            'actionAt' => $this->getActionAt(),
-            'arrivedAt' => $this->getArrivedAt(),
-            'status' => $this->getStatus()->getValue(),
-            'type' => $this->getType()->getValue(),
-            'client' => $this->getClient()->jsonSerialize(),
-            'operator' => $this->getOperator()->jsonSerialize(),
-            'manager' => ($this->getManager() instanceof User ? $this->getManager()->jsonSerialize() : null),
-            'car' => $this->getCar()->jsonSerialize(),
-            'additionalCars' => array_map(
-                fn(Car $car) => $car->jsonSerialize(),
-                $this->getAdditionalCars()->toArray()
-            ),
-            'isCredit' => $this->getIsCredit(),
-            'isTradeIn' => $this->getIsTradeIn(),
-            'gift' => $this->getGift(),
-            'source' => ($this->getSource() ? $this->getSource()->getValue() : null),
-            'reason' => ($this->getReason() ? $this->getReason()->getValue() : null),
-            'attempts' => $this->getAttempts(),
-            // 'credit' => $this->getCredit(),
-            'comments' => $this->getComments(),
-            'targets' => $this->getTargets(),
-            'isProcessed' => $this->getIsProcessed(),
-        ];
+    public function update(
+        DateTimeInterface $actionAt,
+        ?DateTimeInterface $arrivedAt,
+        ?Dealer $dealer,
+        ?Client $client,
+        ?User $operator,
+        ?User $manager,
+        array $cars,
+        Type $type,
+        ApplicationStatus $status,
+        ?bool $isCredit,
+        bool $isTradeIn,
+        ?array $attempts,
+        array $gift,
+        ?Source $source,
+        ?Reason $reason,
+        bool $isProcessed
+    ) {
+        $this->actionAt = $actionAt;
+        $this->arrivedAt = $arrivedAt;
+        $this->dealer = $dealer;
+        $this->client = $client;
+        $this->operator = $operator;
+        $this->manager = $manager;
+        $this->type = $type;
+        $this->status = $status;
+        $this->isCredit = $isCredit;
+        $this->isTradeIn = $isTradeIn;
+        $this->attempts = $attempts;
+        $this->gift = $gift;
+        $this->source = $source;
+        $this->reason = $reason;
+        $this->isProcessed = $isProcessed;
+        $this->car = $cars;
     }
 
     public function getPushedAt(): ?DateTimeInterface
@@ -229,23 +254,9 @@ class Application
         return $this->pushedAt;
     }
 
-    public function setPushedAt(DateTimeInterface $pushedAt): self
-    {
-        $this->pushedAt = $pushedAt;
-
-        return $this;
-    }
-
     public function getActionAt(): ?DateTimeInterface
     {
         return $this->actionAt;
-    }
-
-    public function setActionAt(DateTimeInterface $actionAt): self
-    {
-        $this->actionAt = $actionAt;
-
-        return $this;
     }
 
     public function getArrivedAt(): ?DateTimeInterface
@@ -253,35 +264,14 @@ class Application
         return $this->arrivedAt;
     }
 
-    public function setArrivedAt(DateTimeInterface $arrivedAt): self
-    {
-        $this->arrivedAt = $arrivedAt;
-
-        return $this;
-    }
-
-    public function getType()
+    public function getType(): ?Type
     {
         return $this->type;
     }
 
-    public function setType($type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getStatus()
+    public function getStatus(): ApplicationStatus
     {
         return $this->status;
-    }
-
-    public function setStatus($status): self
-    {
-        $this->status = $status;
-
-        return $this;
     }
 
     public function getIsCredit(): ?bool
@@ -289,23 +279,9 @@ class Application
         return $this->isCredit;
     }
 
-    public function setIsCredit(?bool $isCredit): self
-    {
-        $this->isCredit = $isCredit;
-
-        return $this;
-    }
-
     public function getIsTradeIn(): ?bool
     {
         return $this->isTradeIn;
-    }
-
-    public function setIsTradeIn(bool $isTradeIn): self
-    {
-        $this->isTradeIn = $isTradeIn;
-
-        return $this;
     }
 
     public function getGift(): ?array
@@ -313,23 +289,9 @@ class Application
         return $this->gift;
     }
 
-    public function setGift(array $gift): self
-    {
-        $this->gift = $gift;
-
-        return $this;
-    }
-
     public function getAttempts(): ?array
     {
         return $this->attempts;
-    }
-
-    public function setAttempts(?array $attempts): self
-    {
-        $this->attempts = $attempts;
-
-        return $this;
     }
 
     public function getIsProcessed(): ?bool
@@ -337,23 +299,9 @@ class Application
         return $this->isProcessed;
     }
 
-    public function setIsProcessed(bool $isProcessed): self
-    {
-        $this->isProcessed = $isProcessed;
-
-        return $this;
-    }
-
     public function getDealer(): ?Dealer
     {
         return $this->dealer;
-    }
-
-    public function setDealer(?Dealer $dealer): self
-    {
-        $this->dealer = $dealer;
-
-        return $this;
     }
 
     public function getClient(): ?Client
@@ -361,23 +309,9 @@ class Application
         return $this->client;
     }
 
-    public function setClient(?Client $client): self
-    {
-        $this->client = $client;
-
-        return $this;
-    }
-
     public function getOperator(): ?User
     {
         return $this->operator;
-    }
-
-    public function setOperator(?User $operator): self
-    {
-        $this->operator = $operator;
-
-        return $this;
     }
 
     public function getManager(): ?User
@@ -385,47 +319,9 @@ class Application
         return $this->manager;
     }
 
-    public function setManager(?User $manager): self
-    {
-        $this->manager = $manager;
-
-        return $this;
-    }
-
-    public function getCar(): ?Car
+    public function getCar(): ?iterable
     {
         return $this->car;
-    }
-
-    public function setCar(?Car $car): self
-    {
-        $this->car = $car;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Car[]
-     */
-    public function getAdditionalCars(): Collection
-    {
-        return $this->additionalCars;
-    }
-
-    public function addAdditionalCar(Car $additionalCar): self
-    {
-        if (!$this->additionalCars->contains($additionalCar)) {
-            $this->additionalCars[] = $additionalCar;
-        }
-
-        return $this;
-    }
-
-    public function removeAdditionalCar(Car $additionalCar): self
-    {
-        $this->additionalCars->removeElement($additionalCar);
-
-        return $this;
     }
 
     public function getCredit(): ?Credit
@@ -433,84 +329,24 @@ class Application
         return $this->credit;
     }
 
-    public function setCredit(?Credit $credit): self
-    {
-        $this->credit = $credit;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Comment[]
-     */
-    public function getComments(): Collection
+    public function getComments(): ?iterable
     {
         return $this->comments;
     }
 
-    public function addComment(Comment $comment): self
-    {
-        if (!$this->comments->contains($comment)) {
-            $this->comments[] = $comment;
-        }
-
-        return $this;
-    }
-
-    public function removeComment(Comment $comment): self
-    {
-        $this->comments->removeElement($comment);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Target[]
-     */
-    public function getTargets(): Collection
+    public function getTargets(): ?iterable
     {
         return $this->targets;
     }
 
-    public function addTarget(Target $target): self
-    {
-        if (!$this->targets->contains($target)) {
-            $this->targets[] = $target;
-        }
-
-        return $this;
-    }
-
-    public function removeTarget(Target $target): self
-    {
-        $this->targets->removeElement($target);
-
-        return $this;
-    }
-
-    public function getSource()
+    public function getSource(): ?Source
     {
         return $this->source;
     }
 
-    public function setSource($source): self
-    {
-        $this->source = $source;
-
-        return $this;
-    }
-
-    public function getReason()
+    public function getReason(): ?Reason
     {
         return $this->reason;
     }
 
-    public function setReason($reason): self
-    {
-        $this->reason = $reason;
-
-        return $this;
-    }
-
-    
 }

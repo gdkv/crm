@@ -9,6 +9,8 @@ final class ApplicationStatus extends ReadableEnum
     public const MEETING = 'MEETING';
     public const ARRIVED = 'ARRIVED';
     public const ARCHIVED = 'ARCHIVED';
+    public const IMPORTANT = 'IMPORTANT';
+    public const CREDIT = 'CREDIT';
 
     public static function values(): array
     {
@@ -17,6 +19,8 @@ final class ApplicationStatus extends ReadableEnum
             self::MEETING,
             self::ARRIVED,
             self::ARCHIVED,
+            self::IMPORTANT,
+            self::CREDIT,
         ];
     }
 
@@ -27,6 +31,8 @@ final class ApplicationStatus extends ReadableEnum
             self::MEETING => 'Встреча',
             self::ARRIVED => 'Приехал (в салоне)',
             self::ARCHIVED => 'Архив',
+            self::IMPORTANT => 'Важная',
+            self::CREDIT => 'Кредит',
         ];
     }
 }

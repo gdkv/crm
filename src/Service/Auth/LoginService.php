@@ -27,7 +27,7 @@ class LoginService {
         $jwtData = ($this->createTokenService)($user);
 
         return [
-            "user" => $user->jsonSerialize(),
+            "user" => $user,
             "token" => $jwtData['jwt'],
             "expiresAt" => $jwtData['expiresAt']->format("Y-m-d H:i:s"),
         ];

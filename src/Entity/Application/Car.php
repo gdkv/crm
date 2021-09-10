@@ -92,26 +92,6 @@ class Car
         $this->applications = new ArrayCollection();
     }
 
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->getId(),
-            'brand' =>$this->getBrand(),
-            'model' =>$this->getModel(),
-            'equipment' => $this->getEquipment(),
-            'transmission' => $this->getTransmission(),
-            'engine' => $this->getEngine(),
-            'drive' => $this->getDrive(),
-            'year' => $this->getYear(),
-            'color' => $this->getColor(),
-            'price' => $this->getPrice(),
-            'tradeInPrice' => $this->getTradeInPrice(),
-            'tradeInOwnerPrice' => $this->getTradeInOwnerPrice(),
-            'isUsed' => $this->getIsUsed(),
-            'additionalData' => $this->getAdditionalData(),
-        ];
-    }
-
     public function getBrand(): ?string
     {
         return $this->brand;

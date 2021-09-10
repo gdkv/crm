@@ -3,6 +3,7 @@ namespace App\Service\Application;
 
 use App\Entity\Application\Application;
 use App\Entity\Application\Car;
+use App\Model\DTO\ApplicationDTO;
 use App\Model\Enum\ApplicationStatus;
 use App\Model\Enum\Reason;
 use App\Model\Enum\Source;
@@ -38,50 +39,47 @@ class ApplicationUpdateService {
 
     public function __invoke(Request $request, Application $application): Application
     {
-        $request->request = new InputBag($request->toArray());
+        $applicationDTO = ApplicationDTO::resolver($request);
+        $manager = null;
+        $client = ($this->clientUpdateService)($applicationDTO->getClient(), $application->getClient());
+        
+        if ($applicationDTO->getOperator()) {
+            $operator = $this->userRepository->find($applicationDTO->getOperator());
+        } else {
+            $operator = $this->userRepository->findOneBy(['username' => $this->security->getUser()->getUserIdentifier()], []);
+        }
+        
+        if ($applicationDTO->getManager())
+            $manager = $this->userRepository->find($applicationDTO->getManager());
 
-        $applicationData = [
-            'actionAt' => new DateTime($request->request->get('actionAt', 'now')),
-            'client' => $request->request->all('client'),
-            'car' => $request->request->all('car'),
-            'operator' => $request->request->all('operator'),
-            'status' => $request->request->get('status'),
-            'additionalCar' => $request->request->all('additionalCars'),
-            'isCredit' => $request->request->get('isCredit', null),
-            'tradeIn' => $request->request->get('isTradeIn', false),
-            'gift' => $request->request->all('gift'),
-            'attempts' => $request->request->all('attempts'),
-            'source' => $request->request->get('source'),
-            'reason' => $request->request->get('reason')
-        ];
+        
 
-        $client = ($this->clientUpdateService)($applicationData['client'], $application->getClient());
-        $car = ($this->carUpdateService)($applicationData['car'], $application->getCar());
-        $operator = $this->userRepository->find($applicationData['operator']['id']);
-
-        // $application->setPushedAt(new DateTime('now'));
-        $application->setActionAt($applicationData['actionAt']);
-        $application->setStatus(ApplicationStatus::get($applicationData['status']));
-        $application->setClient($client);
-        $application->setOperator($operator);
-        $application->setCar($car);
-
-        array_map(
-            fn($carData) => $application->addAdditionalCar(
-                ($this->carUpdateService)(
+        $application->update(
+            $applicationDTO->getActionAt(),
+            $applicationDTO->getArrivedAt(),
+            $operator->getDealer(),
+            $client,
+            $operator,
+            $manager,
+            array_map(
+                fn($carData) => ($this->carUpdateService)(
                     carData: $carData,
                     car: (isset($carData['id']) ? $this->carRepository->find($carData['id']) : null)
                 ),
-            ), 
-            $applicationData['additionalCar']
+                $applicationDTO->getCar()
+            ),
+            Type::get($applicationDTO->getType()),
+            ApplicationStatus::get($applicationDTO->getStatus()),
+            $applicationDTO->getIsCredit(),
+            $applicationDTO->getIsTradeIn(),
+            $applicationDTO->getAttempts(),
+            $applicationDTO->getGift(),
+            Source::get($applicationDTO->getSource()),
+            Reason::get($applicationDTO->getReason()),
+            $applicationDTO->getIsProcessed(),
         );
 
-        $application->setIsCredit($applicationData['isCredit']);
-        $application->setIsTradeIn($applicationData['tradeIn']);
-        $application->setGift($applicationData['gift']);
-        $application->setAttempts($applicationData['attempts']);
-        $application->setSource(Source::get($applicationData['source']));
-        $application->setReason(Reason::get($applicationData['reason']));
+        $this->em->flush();
 
         return $application;
     }

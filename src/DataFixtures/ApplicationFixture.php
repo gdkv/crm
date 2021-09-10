@@ -3,7 +3,15 @@
 namespace App\DataFixtures;
 
 use App\Entity\Application\Application;
+use App\Model\Enum\ApplicationStatus;
+use App\Model\Enum\Reason;
+use App\Model\Enum\Source;
+use App\Model\Enum\Type;
+use App\Repository\UserRepository;
 use App\Service\Application\ApplicationAddService;
+use App\Service\Application\Car\CarCreateService;
+use App\Service\Application\Client\ClientCreateService;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -11,7 +19,9 @@ use Doctrine\Persistence\ObjectManager;
 class ApplicationFixture extends Fixture implements DependentFixtureInterface
 {
     public function __construct(
-        private ApplicationAddService $applicationAddService,
+        private UserRepository $userRepository,
+        private ClientCreateService $clientCreateService,
+        private CarCreateService $carCreateService,
     ){}
 
     public function load(ObjectManager $manager)
@@ -19,27 +29,114 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
         $applications = [
             [
                 'client' => [
+                    "name" => "николай",
+                    "patronomic" => "иванович",
+                    "gender" => "MALE",
+                    "phone" => ["79774100516", "79261669222"],
+                    "dateOfBirth" => "1990-11-10 00:00:00",
+                    "additional" => [],
+                    "region" => $this->getReference("region-31"),
+                ],
+                'car' => [
+                    [
+                        "brand" => "KIA",
+                        "model" => "Sorento",
+                    ],
+                    [
+                        "brand" => "Suzuki",
+                        "model" => "Jimny",
+                        "equipment" => "Topline",
+                        "transmission" => "front",
+                        "engine" => "1.6",
+                        "drive" => "",
+                        "year" => 2018,
+                        "color" => "Черный",
+                        "price" => 3990990,
+                        "tradeInPrice" => 3000000,
+                        "tradeInOwnerPrice" => 3400000,
+                        "isUsed" => true,
+                        "additionalData" => "тест"
+                    ],
+                ],
+                'user' => $this->getReference("user-2"),
+                'status' => 'CALL',
+                'additionalCar' => [],
+                'tradeIn' => false,
+                'isCredit' => null,
+                'gift' => ["wheel" => false, "tires" => true, "towbar" => false, "alarm" => false, "thresholds" => false, "travelSet" => false, "petrolTank" => true, "registration" => false, "travel" => false, "color" => true, "insurance" => false, "anticorrosiveProtection" => true, "roofRails" => true, "yearWarranty" => false, "videoRecorder" => true, ],
+                'attempts' => [],
+                'source' => 'SITE',
+                'reason' => 'NOTGOTOMOSCOW'
+            ],
+            [
+                'client' => [
+                    "name" => "Артём",
+                    "gender" => "MALE",
+                    "phone" => ["79031669291", "79261669222", "79251633221"],
+                    "dateOfBirth" => "1990-11-10 00:00:00",
+                    "additional" => [],
+                    "region" => $this->getReference("region-1"),
+                ],
+                'car' => [
+                    [
+                        "brand" => "Haval",
+                        "model" => "F7x",
+                    ],
+                    [
+                        "brand" => "Nissan",
+                        "model" => "Juke",
+                        "equipment" => "Topline",
+                        "transmission" => "front",
+                        "engine" => "1.6",
+                        "drive" => "",
+                        "year" => 2018,
+                        "color" => "Черный",
+                        "price" => 3990990,
+                        "tradeInPrice" => 3000000,
+                        "tradeInOwnerPrice" => 3400000,
+                        "isUsed" => true,
+                        "additionalData" => "тест"
+                    ],
+                    [
+                        "brand" => "Ssang Yong",
+                        "model" => "Actyon",
+                    ],
+                ],
+                'user' => $this->getReference("user-2"),
+                'status' => 'CALL',
+                'additionalCar' => [],
+                'tradeIn' => false,
+                'isCredit' => null,
+                'gift' => ["wheel" => false, "tires" => true, "towbar" => false, "alarm" => false, "thresholds" => false, "travelSet" => false, "petrolTank" => true, "registration" => false, "travel" => false, "color" => true, "insurance" => false, "anticorrosiveProtection" => true, "roofRails" => true, "yearWarranty" => false, "videoRecorder" => true, ],
+                'attempts' => [],
+                'source' => 'STREET',
+                'reason' => 'LTD'
+            ],
+            [
+                'client' => [
                     "name" => "Иван",
                     "gender" => "MALE",
                     "surname" => "Иванов",
-                    "phone" => "79990001244",
+                    "phone" => ["79990001244", ],
                     "dateOfBirth" => "1990-11-10 00:00:00",
                     "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "Citroen",
-                    "model" => "C5",
-                    "equipment" => "Topline",
-                    "transmission" => "front",
-                    "engine" => "1.6",
-                    "drive" => "",
-                    "year" => 2018,
-                    "color" => "Черный",
-                    "price" => 3990990,
-                    "tradeInPrice" => 3000000,
-                    "tradeInOwnerPrice" => 3400000,
-                    "isUsed" => true,
-                    "additionalData" => "тест"
+                    [
+                        "brand" => "Citroen",
+                        "model" => "C5",
+                        "equipment" => "Topline",
+                        "transmission" => "front",
+                        "engine" => "1.6",
+                        "drive" => "",
+                        "year" => 2018,
+                        "color" => "Черный",
+                        "price" => 3990990,
+                        "tradeInPrice" => 3000000,
+                        "tradeInOwnerPrice" => 3400000,
+                        "isUsed" => true,
+                        "additionalData" => "тест"
+                    ],
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'CALL',
@@ -55,25 +152,27 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 'client' => [
                     "name" => "Фрол",
                     "surname" => "Петров",
-                    "phone" => "79991101233",
+                    "phone" => ["79991101233", ],
                     "gender" => "MALE",
                     "dateOfBirth" => "1987-11-10 00:00:00",
                     "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "BMW",
-                    "model" => "X5",
-                    "equipment" => "Topline",
-                    "transmission" => "front",
-                    "engine" => "3.0",
-                    "drive" => "",
-                    "year" => 2018,
-                    "color" => "Черный",
-                    "price" => 3990990,
-                    "tradeInPrice" => 3000000,
-                    "tradeInOwnerPrice" => 3400000,
-                    "isUsed" => true,
-                    "additionalData" => "тест"
+                    [
+                        "brand" => "BMW",
+                        "model" => "X5",
+                        "equipment" => "Topline",
+                        "transmission" => "front",
+                        "engine" => "3.0",
+                        "drive" => "",
+                        "year" => 2018,
+                        "color" => "Черный",
+                        "price" => 3990990,
+                        "tradeInPrice" => 3000000,
+                        "tradeInOwnerPrice" => 3400000,
+                        "isUsed" => true,
+                        "additionalData" => "тест"
+                    ],
                 ],
                 'user' => $this->getReference("user-1"),
                 'status' => 'CALL',
@@ -89,25 +188,27 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 'client' => [
                     "name" => "Жмых",
                     "surname" => "Сидоров",
-                    "phone" => "79992221223",
+                    "phone" => ["79992221223"],
                     "gender" => "FEMALE",
                     "dateOfBirth" => "1988-04-30 00:00:00",
                     "additional" => [],
                 ],
-                'car' => [
-                    "brand" => "Toyota",
-                    "model" => "RAV4",
-                    "equipment" => "Topline",
-                    "transmission" => "front",
-                    "engine" => "3.0",
-                    "drive" => "",
-                    "year" => 2018,
-                    "color" => "Черный",
-                    "price" => 3990990,
-                    "tradeInPrice" => 3000000,
-                    "tradeInOwnerPrice" => 3400000,
-                    "isUsed" => true,
-                    "additionalData" => "тест"
+                'car' => [ 
+                    [
+                        "brand" => "Toyota",
+                        "model" => "RAV4",
+                        "equipment" => "Topline",
+                        "transmission" => "front",
+                        "engine" => "3.0",
+                        "drive" => "",
+                        "year" => 2018,
+                        "color" => "Черный",
+                        "price" => 3990990,
+                        "tradeInPrice" => 3000000,
+                        "tradeInOwnerPrice" => 3400000,
+                        "isUsed" => true,
+                        "additionalData" => "тест"
+                    ]
                 ],
                 'user' => $this->getReference("user-3"),
                 'status' => 'CALL',
@@ -123,25 +224,27 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 'client' => [
                     "name" => "Леонид",
                     "surname" => "Ингиборге",
-                    "phone" => "79262221134",
+                    "phone" => ["79262221134"],
                     "gender" => "MALE",
                     "dateOfBirth" => "1989-07-24 00:00:00",
                     "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "KIA",
-                    "model" => "K5",
-                    "equipment" => "Topline",
-                    "transmission" => "front",
-                    "engine" => "3.0",
-                    "drive" => "",
-                    "year" => 2018,
-                    "color" => "Черный",
-                    "price" => 3990990,
-                    "tradeInPrice" => 3000000,
-                    "tradeInOwnerPrice" => 3400000,
-                    "isUsed" => true,
-                    "additionalData" => "тест"
+                    [
+                        "brand" => "KIA",
+                        "model" => "K5",
+                        "equipment" => "Topline",
+                        "transmission" => "front",
+                        "engine" => "3.0",
+                        "drive" => "",
+                        "year" => 2018,
+                        "color" => "Черный",
+                        "price" => 3990990,
+                        "tradeInPrice" => 3000000,
+                        "tradeInOwnerPrice" => 3400000,
+                        "isUsed" => true,
+                        "additionalData" => "тест"
+                    ]
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'CALL',
@@ -158,13 +261,15 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     "name" => "Людмила",
                     "surname" => "Гунькина",
                     "patronic" => "Александровна",
-                    "phone" => "79058569329",
+                    "phone" => ["79058569329"],
                     "gender" => "FEMALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "Skoda",
-                    "model" => "Rapid"
+                    [
+                        "brand" => "Skoda",
+                        "model" => "Rapid"
+                    ]
                 ],
                 'user' => $this->getReference("user-3"),
                 'status' => 'CALL',
@@ -202,14 +307,16 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     "name" => "АРМЕН",
                     "surname" => "АКЦЕНТ АВАГЯН",
                     "patronic" => "РУДОЛЬФОВИЧ",
-                    "phone" => "79645096933",
+                    "phone" => ["79645096933"],
                     "gender" => "MALE",
                     "additional" => [],
                 ],
-                'car' => [
-                    "brand" => "Toyota",
-                    "model" => "Camry",
-                    "price" => 2573000,
+                'car' => [ 
+                    [
+                        "brand" => "Toyota",
+                        "model" => "Camry",
+                        "price" => 2573000,
+                    ]
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'CALL',
@@ -251,14 +358,16 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
             [
                 'client' => [
                     "name" => "ибрагим",
-                    "phone" => "79660121357",
+                    "phone" => ["79660121357"],
                     "gender" => "MALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "Toyota",
-                    "model" => "Camry",
-                    "price" => 1804500,
+                    [
+                        "brand" => "Toyota",
+                        "model" => "Camry",
+                        "price" => 1804500,
+                    ]
                 ],
                 'user' => $this->getReference("user-1"),
                 'status' => 'MEETING',
@@ -305,7 +414,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
             [
                 'client' => [
                     "name" => "Мирзохит",
-                    "phone" => "79690104047",
+                    "phone" => ["79690104047"],
                     "gender" => "MALE",
                     "additional" => [],
                 ],
@@ -352,7 +461,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     "name" => "Тушева",
                     "surname" => "Анна",
                     "patronic" => "Викторовна",
-                    "phone" => "79014505548",
+                    "phone" => ["79014505548"],
                     "gender" => "FEMALE",
                     "additional" => [],
                 ],
@@ -382,13 +491,15 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
             [
                 'client' => [
                     "name" => "Инга",
-                    "phone" => "79279654155",
+                    "phone" => ["79279654155"],
                     "gender" => "FEMALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    'brand' => 'SsangYong',
-                    'model' => 'Actyon',
+                    [
+                        'brand' => 'SsangYong',
+                        'model' => 'Actyon',
+                    ]
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'ARCHIVED',
@@ -415,19 +526,16 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
             [
                 'client' => [
                     "name" => "Дмитрий",
-                    "phone" => "79187482808",
+                    "phone" => ["79187482808", "79187482808"],
                     "gender" => "MALE",
-                    "additional" => [
-                        [
-                            "name" => "Светлана",
-                            "phone" => "79187482808",
-                        ]
-                    ],
+                    "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "Honda",
-                    "model" => "CR-V New",
-                    "price" => 2645910,
+                    [
+                        "brand" => "Honda",
+                        "model" => "CR-V New",
+                        "price" => 2645910,
+                    ]
                 ],
                 'user' => $this->getReference("user-1"),
                 'status' => 'CALL',
@@ -456,7 +564,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     "name" => "орзалиев",
                     "surname" => "шамиль",
                     "patronic" => "тхазреталиевич",
-                    "phone" => "79280094928",
+                    "phone" => ["79280094928"],
                     "gender" => "MALE",
                     "additional" => [],
                 ],
@@ -508,14 +616,16 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     "name" => "АРМЕН",
                     "surname" => "АКЦЕНТ АВАГЯН",
                     "patronic" => "РУДОЛЬФОВИЧ",
-                    "phone" => "79119581263",
+                    "phone" => ["79119581263"],
                     "gender" => "MALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "Lifan",
-                    "model" => "X50",
-                    "price" => 2573000,
+                    [
+                        "brand" => "Lifan",
+                        "model" => "X50",
+                        "price" => 2573000,
+                    ]
                 ],
                 'user' => $this->getReference("user-3"),
                 'status' => 'CALL',
@@ -558,7 +668,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 'client' => [
                     "name" => "Наталья",
                     "surname" => "Синожацкая",
-                    "phone" => "79892646225",
+                    "phone" => ["79892646225"],
                     "gender" => "FEMALE",
                     "additional" => [],
                 ],
@@ -590,12 +700,14 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     "name" => "райля",
                     "surname" => "гайнуллина",
                     "patronic" => "рафкатовна",
-                    "phone" => "79270831225",
+                    "phone" => ["79270831225"],
                     "gender" => "FEMALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "Datsun",
+                    [
+                        "brand" => "Datsun",
+                    ]
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'ARCHIVED',
@@ -624,14 +736,16 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     "name" => "СПАРТАК",
                     "surname" => "МЧЕДЛИШВИЛИ",
                     "patronic" => "ЛЕРИЕВИЧ",
-                    "phone" => "79774841198",
+                    "phone" => ["79774841198"],
                     "gender" => "MALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "Toyota",
-                    "model" => "Camry",
-                    "price" => 1636200,
+                    [
+                        "brand" => "Toyota",
+                        "model" => "Camry",
+                        "price" => 1636200,
+                    ]
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'ARRIVED',
@@ -679,16 +793,18 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
             [
                 'client' => [
                     "name" => "Игорь",
-                    "phone" => "79268500156",
+                    "phone" => ["79268500156"],
                     "gender" => "MALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    'brand' => 'Hyundai',
-                    'model' => 'Solaris',
-                    'price' => 954900,
-                    'tradeInPrice' => 250000,
-                    'additionalData' => 'Comfort 1.6 AT 123 л.с. 1 061 000 руб. 106 100 руб. 954 900 руб белый, чёрный, серебристый',
+                    [
+                        'brand' => 'Hyundai',
+                        'model' => 'Solaris',
+                        'price' => 954900,
+                        'tradeInPrice' => 250000,
+                        'additionalData' => 'Comfort 1.6 AT 123 л.с. 1 061 000 руб. 106 100 руб. 954 900 руб белый, чёрный, серебристый',
+                    ]
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'CALL',
@@ -714,13 +830,15 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
             ],
             [
                 'client' => [
-                    "phone" => "79265372907",
+                    "phone" => ["79265372907"],
                     "gender" => "MALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "Lada",
-                    "model" => "Vesta",
+                    [
+                        "brand" => "Lada",
+                        "model" => "Vesta",
+                    ]
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'CALL',
@@ -761,13 +879,15 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
             ],
             [
                 'client' => [
-                    "phone" => "79055159655",
+                    "phone" => ["79055159655"],
                     "gender" => "MALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    'brand' => 'Kia',
-                    'model' => 'Rio',
+                    [
+                        'brand' => 'Kia',
+                        'model' => 'Rio',
+                    ]
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'ARCHIVED',
@@ -793,14 +913,16 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
             ],
             [
                 'client' => [
-                    "phone" => "78165722966",
+                    "phone" => ["78165722966"],
                     "gender" => "FEMALE",
                     "additional" => [],
                 ],
-                'car' => [
-                    'brand' => 'Toyota',
-                    'model' => 'RAV4',
-                    'price' => 1434590,
+                'car' =>[
+                    [
+                        'brand' => 'Toyota',
+                        'model' => 'RAV4',
+                        'price' => 1434590,
+                    ]
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'CALL',
@@ -827,14 +949,16 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
             [
                 'client' => [
                     "name" => "Сергей",
-                    "phone" => "79277671697",
+                    "phone" => ["79277671697"],
                     "gender" => "MALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    "brand" => "Shkoda",
-                    "model" => "Rapid",
-                    "price" => 1636200,
+                    [
+                        "brand" => "Shkoda",
+                        "model" => "Rapid",
+                        "price" => 1636200,
+                    ]
                 ],
                 'additionalCar' => [],
                 'user' => $this->getReference("user-2"),
@@ -876,16 +1000,18 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
             [
                 'client' => [
                     "name" => "Екатерина",
-                    "phone" => "79686030758",
+                    "phone" => ["79686030758"],
                     "gender" => "FEMALE",
                     "additional" => [],
                 ],
                 'car' => [
-                    'brand' => 'Lada',
-                    'model' => 'Granta New',
-                    'price' => 954900,
-                    'tradeInPrice' => 250000,
-                    'additionalData' => 'Comfort 1.6 AT 123 л.с. 1 061 000 руб. 106 100 руб. 954 900 руб белый, чёрный, серебристый',
+                    [
+                        'brand' => 'Lada',
+                        'model' => 'Granta New',
+                        'price' => 954900,
+                        'tradeInPrice' => 250000,
+                        'additionalData' => 'Comfort 1.6 AT 123 л.с. 1 061 000 руб. 106 100 руб. 954 900 руб белый, чёрный, серебристый',
+                    ]
                 ],
                 'user' => $this->getReference("user-2"),
                 'status' => 'CALL',
@@ -932,7 +1058,28 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
         $i = 0;
         foreach ($applications as $i => $application) {
             $i++;
-            $applicationItem = ($this->applicationAddService)($application);
+
+            $applicationItem = new Application(
+                isset($application['actionAt']) ? new DateTime($application['actionAt']) : new DateTime('+15 minutes'),
+                null,
+                $this->userRepository->find($application['user'])->getDealer(),
+                ($this->clientCreateService)($application['client']),
+                $this->userRepository->find($application['user']),
+                null,
+                array_map(
+                    fn($carData) => ($this->carCreateService)($carData), 
+                    $application['car']
+                ),
+                Type::get('MANUAL'),
+                ApplicationStatus::get($application['status']),
+                $application['isCredit'],
+                $application['tradeIn'],
+                $application['attempts'],
+                $application['gift'],
+                Source::get($application['source']),
+                Reason::get($application['reason']),
+                false
+            );
             $this->setReference("application-{$i}", $applicationItem);
             $manager->persist($applicationItem);
         }
@@ -943,6 +1090,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
+            RegionFixture::class,
             UserFixture::class,
         ];
     }
