@@ -59,7 +59,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ],
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -103,7 +103,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ],
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -139,7 +139,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ],
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -175,7 +175,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ],
                 ],
                 'user' => $this->getReference("user-1"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -211,7 +211,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-3"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -247,7 +247,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -272,7 +272,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-3"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => true,
@@ -319,7 +319,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => true,
@@ -370,7 +370,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-1"),
-                'status' => 'MEETING',
+                'status' => $this->getReference("status-2"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => true,
@@ -420,7 +420,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ],
                 'car' => [],
                 'user' => $this->getReference("user-2"),
-                'status' => 'ARRIVED',
+                'status' => $this->getReference("status-3"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => true,
@@ -467,7 +467,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ],
                 'car' => [],
                 'user' => $this->getReference("user-3"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -502,7 +502,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'ARCHIVED',
+                'status' => $this->getReference("status-4"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -538,7 +538,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-1"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -570,7 +570,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ],
                 'car' => [],
                 'user' => $this->getReference("user-3"),
-                'status' => 'ARCHIVED',
+                'status' => $this->getReference("status-4"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -628,7 +628,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-3"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => true,
@@ -674,7 +674,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ],
                 'car' => [],
                 'user' => $this->getReference("user-2"),
-                'status' => 'ARCHIVED',
+                'status' => $this->getReference("status-4"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -710,7 +710,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'ARCHIVED',
+                'status' => $this->getReference("status-4"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -748,7 +748,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'ARRIVED',
+                'status' => $this->getReference("status-3"),
                 'additionalCar' => [
                     [
                         "brand" => "Toyota",
@@ -807,7 +807,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => true,
                 'isCredit' => true,
@@ -841,7 +841,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => true,
                 'isCredit' => false,
@@ -890,7 +890,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'ARCHIVED',
+                'status' => $this->getReference("status-4"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -925,7 +925,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [],
                 'tradeIn' => false,
                 'isCredit' => null,
@@ -962,7 +962,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ],
                 'additionalCar' => [],
                 'user' => $this->getReference("user-2"),
-                'status' => 'ARRIVED',
+                'status' => $this->getReference("status-3"),
                 'tradeIn' => true,
                 'isCredit' => true,
                 'gift' => ["wheel" => false, "tires" => false, "towbar" => false, "alarm" => false, "thresholds" => false, "travelSet" => false, "petrolTank" => false, "registration" => false, "travel" => false, "color" => true, "insurance" => false, "anticorrosiveProtection" => false, "roofRails" => false, "yearWarranty" => true, "videoRecorder" => false, ],
@@ -1014,7 +1014,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     ]
                 ],
                 'user' => $this->getReference("user-2"),
-                'status' => 'CALL',
+                'status' => $this->getReference("status-1"),
                 'additionalCar' => [
                     [
                         'brand' => 'Lada',
@@ -1077,7 +1077,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                     $application['car']
                 ),
                 Type::get('MANUAL'),
-                ApplicationStatus::get($application['status']),
+                $application['status'],
                 $application['isCredit'],
                 $application['tradeIn'],
                 (array)$application['attempts'] + $attempts,
@@ -1096,6 +1096,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
+            StatusFixture::class,
             RegionFixture::class,
             UserFixture::class,
         ];

@@ -256,22 +256,5 @@ class Car
         return $this->applications;
     }
 
-    public function addApplication(Application $application): self
-    {
-        if (!$this->applications->contains($application)) {
-            $this->applications[] = $application;
-            $application->addAdditionalCar($this);
-        }
-
-        return $this;
-    }
-
-    public function removeApplication(Application $application): self
-    {
-        if ($this->applications->removeElement($application)) {
-            $application->removeAdditionalCar($this);
-        }
-
-        return $this;
-    }
+   
 }

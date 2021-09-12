@@ -8,6 +8,7 @@ use App\Model\Enum\Reason;
 use App\Model\Enum\Source;
 use App\Model\Enum\Type;
 use App\Repository\CarRepository;
+use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use App\Service\Application\Car\CarCreateService;
 use App\Service\Application\Client\ClientCreateService;
@@ -27,6 +28,7 @@ class ApplicationCreateService {
         private UserRepository $userRepository,
         private SerializerInterface $serializer,
         private CarCreateService $carCreateService,
+        private StatusRepository $statusRepository,
         private ClientCreateService $clientCreateService,
     ){
         $this->serializer = new Serializer([new ObjectNormalizer(), ]);
@@ -38,6 +40,9 @@ class ApplicationCreateService {
         $applicationDTO = ApplicationDTO::resolver($request);
         $manager = null;
         $client = ($this->clientCreateService)($applicationDTO->getClient());
+        $status = $this->statusRepository->findOneBy([
+            'status' => ApplicationStatus::get($applicationDTO->getStatus()),
+        ]);
         
         if ($applicationDTO->getOperator()) {
             $operator = $this->userRepository->find($applicationDTO->getOperator());
@@ -60,7 +65,7 @@ class ApplicationCreateService {
                 $applicationDTO->getCar()
             ),
             Type::get($applicationDTO->getType()),
-            ApplicationStatus::get($applicationDTO->getStatus()),
+            $status,
             $applicationDTO->getIsCredit(),
             $applicationDTO->getIsTradeIn(),
             $applicationDTO->getAttempts(),

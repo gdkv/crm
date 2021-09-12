@@ -62,10 +62,10 @@ class Application
     private Type $type;
 
     /**
-     * @Assert\Choice(callback={ApplicationStatus::class, "values"})
-     * @ORM\Column(type="ApplicationStatus")
+     * @ORM\ManyToOne(targetEntity=Status::class)
+     * @ORM\JoinColumn(nullable=true)
      */
-    private ApplicationStatus $status;
+    private Status $status;
 
     /**
      * @ORM\OneToOne(targetEntity=Client::class)
@@ -200,7 +200,7 @@ class Application
         ?User $manager,
         ?array $cars,
         Type $type,
-        ApplicationStatus $status,
+        Status $status,
         ?bool $isCredit,
         bool $isTradeIn,
         ?array $attempts,
@@ -222,7 +222,7 @@ class Application
         ?User $manager,
         array $cars,
         Type $type,
-        ApplicationStatus $status,
+        Status $status,
         ?bool $isCredit,
         bool $isTradeIn,
         ?array $attempts,
@@ -269,7 +269,7 @@ class Application
         return $this->type;
     }
 
-    public function getStatus(): ApplicationStatus
+    public function getStatus(): Status
     {
         return $this->status;
     }

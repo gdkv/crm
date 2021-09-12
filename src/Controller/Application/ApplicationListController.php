@@ -24,7 +24,7 @@ class ApplicationListController extends AbstractController
     ){}
 
     #[Route('/api/application', name: 'application.list', methods: ['GET', 'HEAD'])]
-    public function list(
+    public function __invoke(
         Request $request, 
         ApplicationRepository $applicationRepository, 
         ApplicationFilterService $applicationFilterService
@@ -42,11 +42,11 @@ class ApplicationListController extends AbstractController
         return $this->jsonResponse($applicationRepository->findFiltered($filters, [], $limit));
     }
 
-    #[Route('/api/application', name: 'application.options', methods: ['OPTIONS'])]
-    public function options(Request $request): Response
-    {
-        $response = new Response();
-        $response->headers->set('Access-Control-Allow-Methods', 'OPTIONS');
-        return $response;
-    }
+    // #[Route('/api/application', name: 'application.options', methods: ['OPTIONS'])]
+    // public function options(Request $request): Response
+    // {
+    //     $response = new Response();
+    //     $response->headers->set('Access-Control-Allow-Methods', 'OPTIONS');
+    //     return $response;
+    // }
 }
