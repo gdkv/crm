@@ -38,8 +38,8 @@ class ClientCreateService {
         $client->setDateOfBirth(isset($clientData['dateOfBirth']) ? new DateTime($clientData['dateOfBirth']) : null);
         $client->setAdditional($clientDataAdditional);
         
-        if(isset($clientData['region']['id'])){
-            $region = $this->regionRepository->find($clientData['region']['id']);
+        if(isset($clientData['region'])){
+            $region = $this->regionRepository->find($clientData['region']);
             $client->setRegion($region);
         }
 

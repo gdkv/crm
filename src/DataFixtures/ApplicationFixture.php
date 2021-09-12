@@ -1058,7 +1058,13 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
         $i = 0;
         foreach ($applications as $i => $application) {
             $i++;
-
+            $attempts = [
+                ["order" => 1, "success" => null, "date" => null, ],
+                ["order" => 2, "success" => null, "date" => null, ],
+                ["order" => 3, "success" => null, "date" => null, ],
+                ["order" => 4, "success" => null, "date" => null, ],
+                ["order" => 5, "success" => null, "date" => null, ],
+            ];
             $applicationItem = new Application(
                 isset($application['actionAt']) ? new DateTime($application['actionAt']) : new DateTime('+15 minutes'),
                 null,
@@ -1074,7 +1080,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ApplicationStatus::get($application['status']),
                 $application['isCredit'],
                 $application['tradeIn'],
-                $application['attempts'],
+                (array)$application['attempts'] + $attempts,
                 $application['gift'],
                 Source::get($application['source']),
                 Reason::get($application['reason']),

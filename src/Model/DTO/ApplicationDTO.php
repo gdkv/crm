@@ -123,9 +123,16 @@ class ApplicationDTO
         return $this->gift;
     }
 
-    public function getAttempts(): ?array
+    public function getAttempts(): array
     {
-        return $this->attempts;
+        $attempts = [
+            ["order" => 1, "success" => null, "date" => null, ],
+            ["order" => 2, "success" => null, "date" => null, ],
+            ["order" => 3, "success" => null, "date" => null, ],
+            ["order" => 4, "success" => null, "date" => null, ],
+            ["order" => 5, "success" => null, "date" => null, ],
+        ];
+        return (array)$this->attempts + $attempts;
     }
 
     public function getSource(): ?string
