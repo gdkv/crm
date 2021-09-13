@@ -2,7 +2,14 @@
 namespace App\Model\Enum;
 
 use Elao\Enum\ReadableEnum;
-
+/**
+ * @method static ApplicationStatus CALL()
+ * @method static ApplicationStatus MEETING()
+ * @method static ApplicationStatus ARRIVED()
+ * @method static ApplicationStatus ARCHIVED()
+ * @method static ApplicationStatus IMPORTANT()
+ * @method static ApplicationStatus CREDIT()
+ */
 final class ApplicationStatus extends ReadableEnum
 {
     public const CALL = 'CALL';
