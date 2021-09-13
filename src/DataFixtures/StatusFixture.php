@@ -18,10 +18,10 @@ class StatusFixture extends Fixture
     public function load(ObjectManager $manager)
     {
         $statuses = [
-            ['name' => 'Звонок', 'status' => 'CALL', 'color' => 'white', ],
-            ['name' => 'Встреча', 'status' => 'MEETING', 'color' => 'blue', ],
-            ['name' => 'Приехал (в салоне)', 'status' => 'ARRIVED', 'color' => 'yellow', ],
-            ['name' => 'Архив', 'status' => 'ARCHIVED', 'color' => 'grey', ],
+            ['name' => 'Звонок', 'status' => 'CALL', 'color' => '#FFFFFF', ],
+            ['name' => 'Встреча', 'status' => 'MEETING', 'color' => '#D9E8FF', ],
+            ['name' => 'Приехал (в салоне)', 'status' => 'ARRIVED', 'color' => '#FFE9CB', ],
+            ['name' => 'Архив', 'status' => 'ARCHIVED', 'color' => '#E0E0E0', ],
         ];
 
         $i = 0;
