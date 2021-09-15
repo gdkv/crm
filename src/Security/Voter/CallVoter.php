@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ApplicationVoter extends Voter
+class CallVoter extends Voter
 {
     public function __construct(
         private Security $security,
@@ -19,14 +19,14 @@ class ApplicationVoter extends Voter
     protected function supports(string $attribute, $subject = null): bool
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, ['APPLICATION_ADD', 'APPLICATION_VIEW', 'APPLICATION_EDIT'])) {
+        if (!in_array($attribute, ['CALL_START', 'CALL_GET'])) {
             return false;
         }
 
-        // only vote on `Post` objects
-        if ($subject && !$subject instanceof Application) {
-            return false;
-        }
+        // // only vote on `Post` objects
+        // if ($subject && !$subject instanceof Application) {
+        //     return false;
+        // }
 
         return true;
 
@@ -41,23 +41,21 @@ class ApplicationVoter extends Voter
         }    
   
         return match ($attribute) {
-            'APPLICATION_VIEW' => (
+            'CALL_START' => (
                 $this->security->isGranted('ROLE_ADMIN') || 
                 $this->security->isGranted('ROLE_SUPERVISOR') || 
                 $this->security->isGranted('ROLE_OPERATOR') ||
-                $this->security->isGranted('ROLE_CREDIT') ||
                 $this->security->isGranted('ROLE_MANAGER') ||
-                $this->security->isGranted('ROLE_RECEPTION') ||
-                $this->security->isGranted('ROLE_GUEST')
+                $this->security->isGranted('ROLE_RECEPTION')
             ),
-            'APPLICATION_ADD',
-            'APPLICATION_EDIT' => (
-                $this->security->isGranted('ROLE_ADMIN') || 
-                $this->security->isGranted('ROLE_MANAGER') ||
-                $this->security->isGranted('ROLE_RECEPTION') ||
-                $this->security->isGranted('ROLE_SUPERVISOR') ||
-                $this->security->isGranted('ROLE_OPERATOR') 
-            ),
+            // 'APPLICATION_ADD',
+            // 'APPLICATION_EDIT' => (
+            //     $this->security->isGranted('ROLE_ADMIN') || 
+            //     $this->security->isGranted('ROLE_MANAGER') ||
+            //     $this->security->isGranted('ROLE_RECEPTION') ||
+            //     $this->security->isGranted('ROLE_SUPERVISOR') ||
+            //     $this->security->isGranted('ROLE_OPERATOR') 
+            // ),
         };
     }
 }

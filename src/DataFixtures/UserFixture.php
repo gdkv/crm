@@ -26,7 +26,7 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 'dealer' => '1', 
                 'name' => 'Дмитрий Гудков', 
                 'aliasName' => 'Федя Федоров', 
-                'role' => 'ROLE_SUPERVISOR', 
+                'role' => 'ROLE_ADMIN', 
                 'plainPassword' => '123456',  
                 'mangoId' => 100, 
                 'smsText' => 'Ждем Вас в Автоцентр Северо-Запад.Скидка на автомобили до 40% м.Тушинская Волоколамское шоссе, д 120', 
