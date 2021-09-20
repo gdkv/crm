@@ -64,7 +64,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ],
                 'car' => [
                     [
-                        "brand" => "SsangYong",
+                        "brand" => "Ssang Yong",
                         "model" => "Actyon",
                     ],
                 ],
@@ -217,7 +217,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ],
                 'car' => [
                     [
-                        "brand" => "KIA",
+                        "brand" => "Kia",
                         "model" => "Sorento",
                     ],
                     [
@@ -414,7 +414,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ],
                 'car' => [
                     [
-                        "brand" => "KIA",
+                        "brand" => "Kia",
                         "model" => "K5",
                         "equipment" => "Topline",
                         "transmission" => "front",
@@ -691,7 +691,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ],
                 'car' => [
                     [
-                        'brand' => 'SsangYong',
+                        'brand' => 'Ssang Yong',
                         'model' => 'Actyon',
                     ]
                 ],
@@ -1251,7 +1251,7 @@ class ApplicationFixture extends Fixture implements DependentFixtureInterface
                 ],
                 'car' => [
                     [
-                        "brand" => "Shkoda",
+                        "brand" => "Skoda",
                         "model" => "Rapid",
                         "price" => 1636200,
                     ]

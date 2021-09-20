@@ -19,32 +19,33 @@ class CarRepository extends ServiceEntityRepository
         parent::__construct($registry, Car::class);
     }
 
-    // /**
-    //  * @return Car[] Returns an array of Car objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Car[] Returns an array of Car objects
+     */
+    public function findDistinctBrands(array $filters = [])
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $type = 'c.brand';
 
-    /*
-    public function findOneBySomeField($value): ?Car
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if (count($filters)){
+            if($filters['type'] === 'models') {
+                $type = 'c.model';
+            }
+        }
+
+        $query = $this->createQueryBuilder('c')
+            ->select($type)
+            ->orderBy($type, 'ASC')
+            ->groupBy($type);
+
+        if (count($filters)){
+            if($filters['type'] === 'models') {
+                $query
+                    ->andWhere("c.brand LIKE :brand")
+                    ->setParameter('brand', $filters['brand']);
+            }
+        }
+
+        return $query->getQuery()->getResult();
     }
-    */
+
 }

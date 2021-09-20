@@ -2,6 +2,7 @@
 namespace App\Service\Application\Client;
 
 use App\Entity\Application\Client;
+use App\Entity\Region;
 use App\Entity\User;
 use App\Model\Enum\Gender;
 use App\Model\Enum\Status;
@@ -39,7 +40,11 @@ class ClientCreateService {
         $client->setAdditional($clientDataAdditional);
         
         if(isset($clientData['region'])){
-            $region = $this->regionRepository->find($clientData['region']['id']);
+            if($clientData['region'] instanceof Region) {
+                $region = $this->regionRepository->find($clientData['region']);
+            } else {
+                $region = $this->regionRepository->find($clientData['region']['id']);
+            }
             $client->setRegion($region);
         }
 
