@@ -44,7 +44,7 @@ class Client
 
     /**
      * @Assert\Choice(callback={Gender::class, "values"})
-     * @ORM\Column(type="Gender")
+     * @ORM\Column(type="Gender", nullable=true)
      */
     private ?Gender $gender;
 

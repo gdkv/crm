@@ -175,7 +175,7 @@ class Application
      * @ORM\ManyToMany(targetEntity=Comment::class)
      * Ignore()
      */
-    private ?iterable $comments = [];
+    private ?iterable $comment = [];
 
     /**
      * @Assert\All({
@@ -207,10 +207,11 @@ class Application
         array $gift,
         ?Source $source,
         ?Reason $reason,
+        array $comments,
         bool $isProcessed
     ) {
         $this->pushedAt = new DateTime('now');
-        $this->update($actionAt, $arrivedAt, $dealer, $client, $operator, $manager, $cars, $type, $status, $isCredit, $isTradeIn, $attempts, $gift, $source, $reason, $isProcessed);
+        $this->update($actionAt, $arrivedAt, $dealer, $client, $operator, $manager, $cars, $type, $status, $isCredit, $isTradeIn, $attempts, $gift, $source, $reason, $comments, $isProcessed);
     }
 
     public function update(
@@ -229,6 +230,7 @@ class Application
         array $gift,
         ?Source $source,
         ?Reason $reason,
+        array $comments,
         bool $isProcessed
     ) {
         $this->actionAt = $actionAt;
@@ -247,6 +249,7 @@ class Application
         $this->reason = $reason;
         $this->isProcessed = $isProcessed;
         $this->car = $cars;
+        $this->comment = $comments;
     }
 
     public function getPushedAt(): ?DateTimeInterface
@@ -329,9 +332,9 @@ class Application
         return $this->credit;
     }
 
-    public function getComments(): ?iterable
+    public function getComment(): ?iterable
     {
-        return $this->comments;
+        return $this->comment;
     }
 
     public function getTargets(): ?iterable

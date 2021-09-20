@@ -22,6 +22,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use App\Model\DTO\CommentDTO;
+use App\Service\Application\Comment\CommentCreateService;
 
 class ApplicationUpdateService {
 
@@ -35,14 +37,16 @@ class ApplicationUpdateService {
         private ClientUpdateService $clientUpdateService,
         private StatusRepository $statusRepository,
         private CarUpdateService $carUpdateService,
+        private CommentCreateService $commentCreateService,
     ){
         $this->serializer = new Serializer([new ObjectNormalizer(), ]);
     }
 
     public function __invoke(Request $request, Application $application): Application
     {
-        $applicationDTO = ApplicationDTO::resolver($request);
         $manager = null;
+        $operator = $this->userRepository->findOneBy(['username' => $this->security->getUser()->getUserIdentifier()], []);
+        $applicationDTO = ApplicationDTO::resolver($request, $operator);
         $status = $this->statusRepository->findOneBy([
             'status' => ApplicationStatus::get($applicationDTO->getStatus()),
         ]);
@@ -50,12 +54,11 @@ class ApplicationUpdateService {
         
         if ($applicationDTO->getOperator()) {
             $operator = $this->userRepository->find($applicationDTO->getOperator());
-        } else {
-            $operator = $this->userRepository->findOneBy(['username' => $this->security->getUser()->getUserIdentifier()], []);
         }
         
-        if ($applicationDTO->getManager())
+        if ($applicationDTO->getManager()){
             $manager = $this->userRepository->find($applicationDTO->getManager());
+        }
 
         $application->update(
             $applicationDTO->getActionAt(),
@@ -79,6 +82,10 @@ class ApplicationUpdateService {
             $applicationDTO->getGift(),
             Source::get($applicationDTO->getSource()),
             Reason::get($applicationDTO->getReason()),
+            array_map(
+                fn(CommentDTO $commentDTO) => ($this->commentCreateService)($commentDTO), 
+                $applicationDTO->getComments()
+            ),
             $applicationDTO->getIsProcessed(),
         );
 

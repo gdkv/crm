@@ -28,14 +28,15 @@ class ApplicationDTO
         private ?string $source,
         private ?string $reason,
         private ?array $credit,
-        private ?array $comments,
-        private ?array $targets,
+        private array $comments,
+        private array $targets,
         private bool $isProcessed,
     ){}
 
-    public static function resolver(Request $request)
+    public static function resolver(Request $request, User $currentOperator)
     {
         $request->request = new InputBag($request->toArray());
+        // $operator = $this->userRepository->findOneBy(['username' => $this->security->getUser()->getUserIdentifier()], []);
 
         return new static(
             $request->request->get('actionAt'),
@@ -53,7 +54,10 @@ class ApplicationDTO
             $request->request->get('source'),
             $request->request->get('reason'),
             $request->request->all('credit'),
-            $request->request->all('comments'),
+            array_map(
+                fn($comment) => new CommentDTO($comment['text'], $currentOperator),
+                $request->request->all('comments')
+            ),
             $request->request->all('targets'),
             $request->request->get('isProcessed', false),
         );
@@ -150,12 +154,12 @@ class ApplicationDTO
         return $this->credit;
     }
 
-    public function getComments(): ?array
+    public function getComments(): array
     {
         return $this->comments;
     }
 
-    public function getTargets(): ?array
+    public function getTargets(): array
     {
         return $this->targets;
     }

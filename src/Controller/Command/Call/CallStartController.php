@@ -22,26 +22,26 @@ class CallStartController extends AbstractController
         private SerializerInterface $serializer,
     ){}
 
-    #[Route('/api/command/call/start', name: 'command.call.start', methods: ['POST'])]
-    public function __invoke(): JsonResponse
+    #[Route('/api/command/call/start', name: 'command.call.start', methods: ['GET', 'POST'])]
+    public function __invoke()
     {
-        try {
-            $this->denyAccessUnlessGranted('CALL_START');
-        } catch (AccessDeniedException $e) {
-            return $this->jsonResponseError(
-                message: "Недостаточно прав для выполнения комманды", 
-                code: 'access_denied', 
-                httpCode: 401
-            );
-        }
+        // try {
+        //     $this->denyAccessUnlessGranted('CALL_START');
+        // } catch (AccessDeniedException $e) {
+        //     return $this->jsonResponseError(
+        //         message: "Недостаточно прав для выполнения комманды", 
+        //         code: 'access_denied', 
+        //         httpCode: 401
+        //     );
+        // }
 
-        try {
-            ($this->callStartService)();
-        } catch (Throwable $e) {
-            return $this->jsonResponseError(message: $e->getMessage(), code: 'pdo_error');
-        }
+        // try {
+            $data = ($this->callStartService)();
+        // } catch (Throwable $e) {
+            // return $this->jsonResponseError(message: $e->getMessage(), code: 'pdo_error');
+        // }
 
-        return $this->jsonResponse();
+        return $this->jsonResponse($data);
     } 
 
 }

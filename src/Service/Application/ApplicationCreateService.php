@@ -3,6 +3,7 @@ namespace App\Service\Application;
 
 use App\Entity\Application\Application;
 use App\Model\DTO\ApplicationDTO;
+use App\Model\DTO\CommentDTO;
 use App\Model\Enum\ApplicationStatus;
 use App\Model\Enum\Reason;
 use App\Model\Enum\Source;
@@ -12,6 +13,7 @@ use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use App\Service\Application\Car\CarCreateService;
 use App\Service\Application\Client\ClientCreateService;
+use App\Service\Application\Comment\CommentCreateService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -30,6 +32,7 @@ class ApplicationCreateService {
         private CarCreateService $carCreateService,
         private StatusRepository $statusRepository,
         private ClientCreateService $clientCreateService,
+        private CommentCreateService $commentCreateService,
     ){
         $this->serializer = new Serializer([new ObjectNormalizer(), ]);
     }
@@ -37,8 +40,9 @@ class ApplicationCreateService {
     public function __invoke(Request $request): Application
     {
 
-        $applicationDTO = ApplicationDTO::resolver($request);
         $manager = null;
+        $operator = $this->userRepository->findOneBy(['username' => $this->security->getUser()->getUserIdentifier()], []);
+        $applicationDTO = ApplicationDTO::resolver($request, $operator);
         $client = ($this->clientCreateService)($applicationDTO->getClient());
         $status = $this->statusRepository->findOneBy([
             'status' => ApplicationStatus::get($applicationDTO->getStatus()),
@@ -46,12 +50,11 @@ class ApplicationCreateService {
         
         if ($applicationDTO->getOperator()) {
             $operator = $this->userRepository->find($applicationDTO->getOperator());
-        } else {
-            $operator = $this->userRepository->findOneBy(['username' => $this->security->getUser()->getUserIdentifier()], []);
-        }
+        } 
         
-        if ($applicationDTO->getManager())
+        if ($applicationDTO->getManager()) {
             $manager = $this->userRepository->find($applicationDTO->getManager());
+        }
 
         $application = new Application(
             $applicationDTO->getActionAt(),
@@ -72,6 +75,10 @@ class ApplicationCreateService {
             $applicationDTO->getGift(),
             Source::get($applicationDTO->getSource()),
             Reason::get($applicationDTO->getReason()),
+            array_map(
+                fn(CommentDTO $commentDTO) => ($this->commentCreateService)($commentDTO), 
+                $applicationDTO->getComments()
+            ),
             $applicationDTO->getIsProcessed(),
         );
 

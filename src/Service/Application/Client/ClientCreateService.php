@@ -39,7 +39,7 @@ class ClientCreateService {
         $client->setAdditional($clientDataAdditional);
         
         if(isset($clientData['region'])){
-            $region = $this->regionRepository->find($clientData['region']);
+            $region = $this->regionRepository->find($clientData['region']['id']);
             $client->setRegion($region);
         }
 

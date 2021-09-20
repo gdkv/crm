@@ -21,3 +21,15 @@ services:
     App\Service\User\UserCheckAccessService:
         arguments:
             $trustedIp: '%env(TRUSTED_IP)%'
+    
+    App\Service\Command\Call\CallStartService:
+        arguments:
+            $mangoApiRiaKey: '%env(MANGO_API_RIA_KEY)%'
+            $mangoApiRiaSalt: '%env(MANGO_API_RIA_SALT)%'
+            $mangoApiMasKey: '%env(MANGO_API_MAS_KEY)%'
+            $mangoApiMasSalt: '%env(MANGO_API_MAS_KEY)%'
+
+            
+
+
+

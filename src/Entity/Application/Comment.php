@@ -4,6 +4,7 @@ namespace App\Entity\Application;
 
 use App\Entity\EntityDateTrait;
 use App\Entity\EntityIdTrait;
+use App\Entity\User;
 use App\Repository\CommentRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,17 +31,26 @@ class Comment
      */
     private Collection $applications;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private User $operator;
+
+    public function __construct(string $text, User $operator)
+    {
+        $this->text = $text;
+        $this->operator = $operator;
+    }
 
     public function getText(): string
     {
         return $this->text;
     }
 
-
-    public function setText(string $text): self
+    public function getOperator(): User
     {
-        $this->text = $text;
-
-        return $this;
+        return $this->operator;
     }
+
 }
