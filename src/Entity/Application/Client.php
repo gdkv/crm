@@ -21,17 +21,17 @@ class Client
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $name;
+    private ?string $name = "";
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $surname;
+    private ?string $surname = "";
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $patronymic;
+    private ?string $patronymic = "";
 
     /**
      * @Assert\Type("array"),
@@ -74,9 +74,9 @@ class Client
      */
     private ?Region $region;
 
-    public function getName(): ?string
+    public function getName(): string
     {
-        return $this->name;
+        return $this->name ? : "";
     }
 
     public function setName(?string $name): self
@@ -86,9 +86,9 @@ class Client
         return $this;
     }
 
-    public function getSurname(): ?string
+    public function getSurname(): string
     {
-        return $this->surname;
+        return $this->surname ? : "";
     }
 
     public function setSurname(?string $surname): self
@@ -98,9 +98,9 @@ class Client
         return $this;
     }
 
-    public function getPatronymic(): ?string
+    public function getPatronymic(): string
     {
-        return $this->patronymic;
+        return $this->patronymic ? : "";
     }
 
     public function setPatronymic(?string $patronymic): self
