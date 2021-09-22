@@ -16,7 +16,9 @@ use Throwable;
 class CallStartController extends AbstractController
 {  
     use JsonResponseTrait;
+
     
+
     public function __construct(
         private CallStartService $callStartService,
         private SerializerInterface $serializer,
@@ -25,23 +27,9 @@ class CallStartController extends AbstractController
     #[Route('/api/command/call/start', name: 'command.call.start', methods: ['GET', 'POST'])]
     public function __invoke()
     {
-        // try {
-        //     $this->denyAccessUnlessGranted('CALL_START');
-        // } catch (AccessDeniedException $e) {
-        //     return $this->jsonResponseError(
-        //         message: "Недостаточно прав для выполнения комманды", 
-        //         code: 'access_denied', 
-        //         httpCode: 401
-        //     );
-        // }
+        $response = ($this->callStartService)();
 
-        // try {
-            $data = ($this->callStartService)();
-        // } catch (Throwable $e) {
-            // return $this->jsonResponseError(message: $e->getMessage(), code: 'pdo_error');
-        // }
-
-        return $this->jsonResponse($data);
+        return $this->jsonResponse($response);
     } 
 
 }

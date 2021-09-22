@@ -2,20 +2,22 @@
 namespace App\Service\Command\Call;
 
 use App\Entity\User;
+use Epictest\MangoVpbx\MangoOffice\Call;
 
 class CallStartService {
 
-    public function __construct(
-        private string $mangoApiRiaKey,
-        private string $mangoApiRiaSalt,
-        private string $mangoApiMasKey,
-        private string $mangoApiMasSalt,
-    ){}
+    private Call $mangoVpbx;
 
-    public function __invoke(string $phone, User $operator): ?array
+    public function __construct(
+        private string $masMangoKey,
+        private string $masMangoSalt,
+    ){
+        $this->mangoVpbx = new Call($this->masMangoKey, $this->masMangoSalt);
+    }
+
+    public function __invoke()
     {
-        // $operator
-        return [];
+        return $this->mangoVpbx->sendCall(to:"79268606949", from: "666");
     }
 
     

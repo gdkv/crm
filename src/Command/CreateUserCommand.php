@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\User;
+use App\Model\Enum\Role;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -62,7 +63,7 @@ class CreateUserCommand extends Command
         $user = new User();
         $user->setUsername($name);
         $user->setPassword($this->passwordEncoder->hashPassword($user, $password));
-        $user->setRoles(["ROLE_ADMIN",]);
+        $user->setRoles(Role::ROLE_SUPERVISOR());
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
