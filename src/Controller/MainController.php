@@ -6,6 +6,7 @@ use App\Controller\JsonResponseTrait;
 use App\Controller\RoleTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -28,5 +29,11 @@ class MainController extends AbstractController
             return $this->jsonResponseError(message: "access_denied", code: "Недостаточно прав просмотра титула");
         }
         return $this->jsonResponse();
+    }
+
+    #[Route('/ws', name: 'websocket')]
+    public function websocket(): Response
+    {
+        return $this->render('chat/chat.html.twig', []);
     }
 }

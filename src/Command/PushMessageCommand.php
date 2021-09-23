@@ -2,10 +2,6 @@
 
 namespace App\Command;
 
-use App\Websockets\MessageHandler;
-use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
-use Ratchet\Http\HttpServer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,35 +9,40 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 
 #[AsCommand(
-    name: 'run:websocket-server',
+    name: 'run:push-socket',
     description: 'Add a short description for your command',
 )]
-class WebsocketServerCommand extends Command
+class PushMessageCommand extends Command
 {
-
     public function __construct(
-        private int $websocketPort,
-        private LoggerInterface $logger,
-        private EntityManagerInterface $em,
-    ) {
+        private HubInterface $hub
+    ){
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this
-            ->setDescription('Start websocket server')
-            // ->addArgument('name', InputArgument::REQUIRED, 'Name')
-            // ->addArgument('password', InputArgument::REQUIRED, 'Password')
-        ;
+        // $this
+        //     ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
+        //     ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+        // ;
     }
- 
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $io->info("Starting server on port {$this->websocketPort}");
+        $io->success('Socket is send');
+
+        $update = new Update(
+            '/test',
+            json_encode(['status' => 'OutOfStock'])
+        );
+
+        $this->hub->publish($update);
 
         return Command::SUCCESS;
     }

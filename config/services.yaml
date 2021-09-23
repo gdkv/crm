@@ -29,6 +29,8 @@ services:
             # $mangoApiRiaKey: '%env(MANGO_API_RIA_KEY)%'
             # $mangoApiRiaSalt: '%env(MANGO_API_RIA_SALT)%'
 
+    App\Websockets\MessageHandler:
+    
     App\Command\WebsocketServerCommand:
         arguments:
             $websocketPort: '%env(WEBSOCKET_PORT)%'

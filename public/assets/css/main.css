@@ -1,0 +1,35 @@
+body {
+    font-family: arial;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+input {
+    border: solid lightgrey 1px;
+    padding: 8px;
+}
+
+label {
+    display: inline-block;
+    min-width: 150px;
+}
+
+#chat {
+    height: 400px;
+    width: 600px;
+    border: solid lightgrey 1px;
+    overflow: auto;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 6px 12px;
+}
+
+.message {
+    padding: 10px 5px;
+    margin-bottom: 10px;
+    border-bottom: solid lightgrey 1px;
+}
