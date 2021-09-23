@@ -24,12 +24,16 @@ services:
     
     App\Service\Command\Call\CallStartService:
         arguments:
-            $mangoApiRiaKey: '%env(MANGO_API_RIA_KEY)%'
-            $mangoApiRiaSalt: '%env(MANGO_API_RIA_SALT)%'
-            $mangoApiMasKey: '%env(MANGO_API_MAS_KEY)%'
-            $mangoApiMasSalt: '%env(MANGO_API_MAS_KEY)%'
+            $masMangoKey: '%env(MANGO_API_MAS_KEY)%'
+            $masMangoSalt: '%env(MANGO_API_MAS_SALT)%'
+            # $mangoApiRiaKey: '%env(MANGO_API_RIA_KEY)%'
+            # $mangoApiRiaSalt: '%env(MANGO_API_RIA_SALT)%'
 
-            
+    App\Websockets\MessageHandler:
+    
+    App\Command\WebsocketServerCommand:
+        arguments:
+            $websocketPort: '%env(WEBSOCKET_PORT)%'
 
 
 
