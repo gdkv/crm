@@ -24,7 +24,7 @@ class CallStartController extends AbstractController
         private SerializerInterface $serializer,
     ){}
 
-    #[Route('/api/command/call/start', name: 'command.call.start', methods: ['GET', 'POST'])]
+    #[Route('/api/command/call/start', name: 'command.call.start', methods: ['POST'])]
     public function __invoke()
     {
         $response = ($this->callStartService)();

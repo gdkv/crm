@@ -23,10 +23,9 @@ class CallGetController extends AbstractController
         private HubInterface $hub,
     ){}
 
-    #[Route('/api/command/call/get', name: 'command.call.get', methods: ['GET', 'POST'])]
+    #[Route('/api/command/call/get', name: 'command.call.get', methods: ['POST'])]
     public function __invoke()
     {
-        // $response = ($this->callStartService)();
         $update = new Update(
             '/test',
             json_encode(['status' => 'OutOfStock'])
